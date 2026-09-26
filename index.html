@@ -6,6 +6,26 @@
     <title>SocialBoost - #1 Growth Service</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* অর্ডার বাটন লিংক স্টাইল */
+        .btn-order-link {
+            background: #2563eb;
+            color: #ffffff !important;
+            border-radius: 7px;
+            padding: 8px;
+            font-size: 11.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            text-decoration: none;
+            box-shadow: 0 3px 6px rgba(37,99,235,0.2);
+        }
+        .btn-order-link:active {
+            background: #1d4ed8;
+        }
+    </style>
 </head>
 <body>
 
@@ -19,7 +39,7 @@
             <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 11px;"></i>
             <input type="text" placeholder="কোন সার্ভিস খুঁজছেন?">
         </div>
-        <div class="cart-icon">
+        <div class="cart-icon" onclick="location.href='account.html'">
             <i class="fa-solid fa-cart-shopping"></i>
             <span class="cart-badge">3</span>
         </div>
@@ -49,22 +69,22 @@
 
     <!-- প্ল্যাটফর্ম আইকন গ্রিড -->
     <div class="platform-grid">
-        <div class="platform-icon-btn ig-btn"><i class="fa-brands fa-instagram"></i></div>
-        <div class="platform-icon-btn fb-btn"><i class="fa-brands fa-facebook-f"></i></div>
-        <div class="platform-icon-btn yt-btn"><i class="fa-brands fa-youtube"></i></div>
-        <div class="platform-icon-btn tk-btn"><i class="fa-brands fa-tiktok"></i></div>
-        <div class="platform-icon-btn tg-btn"><i class="fa-brands fa-telegram"></i></div>
-        <div class="platform-icon-btn more-btn"><i class="fa-solid fa-table-cells-large"></i></div>
+        <a href="product.html" class="platform-icon-btn ig-btn"><i class="fa-brands fa-instagram"></i></a>
+        <a href="product.html" class="platform-icon-btn fb-btn"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="product.html" class="platform-icon-btn yt-btn"><i class="fa-brands fa-youtube"></i></a>
+        <a href="product.html" class="platform-icon-btn tk-btn"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="product.html" class="platform-icon-btn tg-btn"><i class="fa-brands fa-telegram"></i></a>
+        <a href="product.html" class="platform-icon-btn more-btn"><i class="fa-solid fa-table-cells-large"></i></a>
     </div>
 
     <!-- জনপ্রিয় সার্ভিস সেকশন -->
     <div class="section-header">
         <div class="sec-title"><i class="fa-solid fa-fire" style="color: #ef4444;"></i> জনপ্রিয় সার্ভিস</div>
-        <a href="#" class="see-all">See All <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="product.html" class="see-all">See All <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
     <div class="services-grid">
-        <!-- ১. Instagram Followers -->
+        <!-- ১. Instagram Followers (ক্লিক করলে product.html এ যাবে) -->
         <div class="service-card">
             <span class="badge-pill b-bestseller">Best Seller</span>
             <div class="service-thumb thumb-ig"><i class="fa-brands fa-instagram thumb-icon"></i></div>
@@ -76,7 +96,7 @@
                     <span class="rating-count">4.9 (2.1K)</span>
                 </div>
                 <div class="price-row"><span class="curr-price">৳150</span><span class="del-price">৳300</span></div>
-                <button class="btn-order"><i class="fa-solid fa-cart-plus"></i> অর্ডার করুন</button>
+                <a href="product.html" class="btn-order-link"><i class="fa-solid fa-cart-plus"></i> অর্ডার করুন</a>
             </div>
         </div>
 
@@ -92,26 +112,26 @@
                     <span class="rating-count">4.8 (1.6K)</span>
                 </div>
                 <div class="price-row"><span class="curr-price">৳120</span><span class="del-price">৳250</span></div>
-                <button class="btn-order"><i class="fa-solid fa-cart-plus"></i> অর্ডার করুন</button>
+                <a href="product.html" class="btn-order-link"><i class="fa-solid fa-cart-plus"></i> অর্ডার করুন</a>
             </div>
         </div>
     </div>
 
-    <!-- বটম ন্যাভিগেশন বার (Profile বাটন সরাসরি account.html এর সাথে যুক্ত) -->
+    <!-- বটম ন্যাভিগেশন বার -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active">
             <i class="fa-solid fa-house"></i>
             <span>Home</span>
         </a>
-        <a href="index.html" class="nav-item">
+        <a href="product.html" class="nav-item">
             <i class="fa-solid fa-layer-group"></i>
             <span>Products</span>
         </a>
-        <a href="index.html" class="nav-item">
+        <a href="product.html" class="nav-item">
             <i class="fa-solid fa-fire"></i>
             <span>Special Offer</span>
         </a>
-        <a href="index.html" class="nav-item">
+        <a href="product.html" class="nav-item">
             <i class="fa-solid fa-box-archive"></i>
             <span>Bundle Pack</span>
         </a>
@@ -121,6 +141,18 @@
         </a>
     </nav>
 
-    <script src="script.js"></script>
+    <!-- স্লাইডার স্ক্রিপ্ট -->
+    <script>
+        const sliderWrapper = document.getElementById('sliderWrapper');
+        const dots = document.querySelectorAll('.slider-dots .dot');
+        let currentSlide = 0;
+        if (sliderWrapper) {
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % 3;
+                sliderWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+                dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentSlide));
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
