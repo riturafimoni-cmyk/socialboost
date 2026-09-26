@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SocialBoost - Central Admin Command Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ফায়ারবেস ক্লাউড এসডিকে -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --card-dark: #111827;
+            --card-border: #1f2937;
+            --brand-orange: #ff5400;
+            --brand-cyan: #06b6d4;
+            --text-light: #f9fafb;
+            --text-muted: #9ca3af;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-dark); color: var(--text-light); padding-bottom: 80px; }
+
+        /* অ্যাডমিন হেডার */
+        .admin-header {
+            background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border);
+            padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+        }
+        .admin-brand { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 900; }
+        .admin-brand i { color: var(--brand-orange); }
+        .admin-badge { background: rgba(255, 84, 0, 0.15); color: var(--brand-orange); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255, 84, 0, 0.3); }
+
+        .container { padding: 14px; max-width: 600px; margin: 0 auto; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* কার্ড ও কন্টেইনার */
+        .glass-card {
+            background: var(--card-dark); border: 1px solid var(--card-border); border-radius: 16px;
+            padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+        .card-header-title { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .card-header-title i { color: var(--brand-orange); }
+
+        /* ইনপুট ফিল্ড ও বাটন */
+        .form-group { margin-bottom: 12px; }
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; display: block; }
+        .custom-input {
+            width: 100%; background: #030712; border: 1px solid var(--card-border); border-radius: 10px;
+            padding: 10px 12px; color: var(--text-light); font-size: 13px; outline: none; transition: 0.2s;
+        }
+        .custom-input:focus { border-color: var(--brand-orange); }
+
+        .btn-glow {
+            width: 100%; background: linear-gradient(135deg, var(--brand-orange), #ea580c);
+            color: white; border: none; padding: 12px; border-radius: 10px; font-size: 13px;
+            font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+            box-shadow: 0 4px 15px rgba(255, 84, 0, 0.3);
+        }
+        .btn-glow:active { transform: scale(0.98); }
+
+        /* ইন-অ্যাপ প্রিমিয়াম টোস্ট অ্যালার্ট (Browser alert নয়) */
+        .toast-notify {
+            position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--brand-orange);
+            color: white; padding: 10px 18px; border-radius: 30px; font-size: 12px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; z-index: 9999; transition: transform 0.3s ease; box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+        .toast-notify.show { transform: translateX(-50%) translateY(0); }
+
+        /* ড্যাশবোর্ড কাউন্টার গ্রিড */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+        .stat-box { background: var(--card-dark); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; }
+        .stat-box p { font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+        .stat-box h3 { font-size: 19px; font-weight: 900; }
+
+        /* বটম ট্যাব বার */
+        .admin-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(17, 24, 39, 0.92);
+            backdrop-filter: blur(12px); border-top: 1px solid var(--card-border); height: 60px;
+            display: flex; justify-content: space-around; align-items: center; z-index: 100;
+        }
+        .nav-btn {
+            background: none; border: none; color: var(--text-muted); font-size: 9.5px; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
+        }
+        .nav-btn i { font-size: 16px; }
+        .nav-btn.active { color: var(--brand-orange); }
+
+        /* অর্ডার কার্ড */
+        .order-card {
+            background: #0d131f; border: 1px solid var(--card-border); border-radius: 14px;
+            padding: 12px; margin-bottom: 10px;
+        }
+        .order-meta-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+        .order-status-badge { font-size: 9.5px; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
+        .badge-proc { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-done { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .order-action-btns { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-act { flex: 1; padding: 8px; border-radius: 8px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <!-- ইন-অ্যাপ টোস্ট নোটিফিকেশন -->
+    <div class="toast-notify" id="appToast"><i class="fa-solid fa-circle-check" style="color:var(--success-green);"></i> <span id="toastMsg">Action Successful</span></div>
+
+    <!-- হেডার -->
+    <header class="admin-header">
+        <div class="admin-brand">
+            <i class="fa-solid fa-shield-halved"></i> SocialBoost <span class="admin-badge">ADMIN</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-muted); cursor:pointer;" onclick="logoutAdmin()">
+            <i class="fa-solid fa-power-off" style="color:var(--danger-red);"></i>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ================= ০. সিকিউর পাসওয়ার্ড লগইন গেট ================= -->
+        <section id="panel-auth" class="tab-panel active">
+            <div class="glass-card" style="text-align: center; margin-top: 40px; padding: 25px 16px;">
+                <div style="width: 55px; height: 55px; background: rgba(255,84,0,0.1); border: 1px solid rgba(255,84,0,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 22px; color: var(--brand-orange);">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h2 style="font-size: 18px; margin-bottom: 6px;">Admin Authorization</h2>
+                <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 20px;">এই সেন্ট্রাল সিস্টেমে প্রবেশের জন্য অ্যাডমিন পাসওয়ার্ড দিন</p>
+                
+                <div class="form-group" style="text-align: left;">
+                    <label>পাসওয়ার্ড দিন</label>
+                    <input type="password" id="adminSecretPass" class="custom-input" placeholder="••••••••••••" style="text-align: center; letter-spacing: 2px;">
+                </div>
+                <button class="btn-glow" onclick="verifyAdminAccess()">
+                    <i class="fa-solid fa-key"></i> ড্যাশবোর্ডে প্রবেশ করুন
+                </button>
+            </div>
+        </section>
+        <!-- ================= ১. লাইভ ড্যাশবোর্ড ও ওভারভিউ ================= -->
+        <section id="panel-dashboard" class="tab-panel">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <p><i class="fa-solid fa-bangladeshi-taka-sign"></i> মোট আয় (Revenue)</p>
+                    <h3 style="color: var(--success-green);" id="sumRevenue">৳0</h3>
+                </div>
+                <div class="stat-box">
+                    <p><i class="fa-solid fa-cart-shopping"></i> মোট অর্ডার</p>
+                    <h3 id="sumTotalOrders">0</h3>
+                </div>
+                <div class="stat-box">
+                    <p><i class="fa-solid fa-clock"></i> পেন্ডিং/প্রসেসিং</p>
+                    <h3 style="color: #f59e0b;" id="sumProcessingOrders">0</h3>
+                </div>
+                <div class="stat-box">
+                    <p><i class="fa-solid fa-box-open"></i> একটিভ সার্ভিস</p>
+                    <h3 style="color: var(--brand-cyan);" id="sumActiveProducts">0</h3>
+                </div>
+            </div>
+
+            <!-- সাম্প্রতিক অর্ডারের লাইভ ভিউ -->
+            <div class="glass-card">
+                <div class="card-header-title"><i class="fa-solid fa-bell"></i> ইনকামিং লাইভ অর্ডার (Real-Time Feed)</div>
+                <div id="dashboardRecentOrders"></div>
+            </div>
+        </section>
+
+        <!-- ================= ২. সম্পূর্ণ অর্ডার ম্যানেজার ================= -->
+        <section id="panel-orders" class="tab-panel">
+            <div class="card-header-title" style="justify-content: space-between;">
+                <span><i class="fa-solid fa-list-check"></i> কাস্টমার অর্ডার তালিকা</span>
+                <span style="font-size:11px; color:var(--text-muted);" id="ordersCountBadge">0 Orders</span>
+            </div>
+            <div id="fullOrdersFeed"></div>
+        </section>
+
+        <!-- ================= ৩. প্রোডাক্ট ও বান্ডেল ম্যানেজার ================= -->
+        <section id="panel-products" class="tab-panel">
+            <div class="glass-card">
+                <div class="card-header-title"><i class="fa-solid fa-plus-circle"></i> নতুন প্রোডাক্ট / বান্ডেল যোগ করুন</div>
+                
+                <div class="form-group">
+                    <label>ক্যাটাগরি নির্ধারণ করুন</label>
+                    <select id="pCategory" class="custom-input">
+                        <option value="regular">Regular Service (Instagram, Facebook etc.)</option>
+                        <option value="special">🔥 Special Offer Deal</option>
+                        <option value="bundle">📦 All-in-One Bundle Pack</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>প্ল্যাটফর্ম নির্বাচন</label>
+                    <select id="pPlatform" class="custom-input">
+                        <option value="instagram">Instagram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="telegram">Telegram</option>
+                        <option value="other">Other Digital Tool</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>সার্ভিসের নাম (Title)</label>
+                    <input type="text" id="pTitle" class="custom-input" placeholder="যেমন: Instagram Followers (Real & Active)">
+                </div>
+
+                <div class="form-group">
+                    <label>প্রতি ১,০০০-এর দাম (Price in ৳)</label>
+                    <input type="number" id="pRate" class="custom-input" placeholder="যেমন: 150">
+                </div>
+
+                <div class="form-group">
+                    <label>প্রিসেট বাটন কোয়ান্টিটি (কমা দিয়ে লিখুন)</label>
+                    <input type="text" id="pPresets" class="custom-input" value="1000, 2000, 3000" placeholder="1000, 5000, 10000">
+                </div>
+
+                <div class="form-group">
+                    <label>প্রোডাক্টের ছবি আপলোড (ফোন গ্যালারি থেকে)</label>
+                    <input type="file" id="pImageFile" accept="image/*" class="custom-input">
+                </div>
+
+                <div class="form-group">
+                    <label>বিবরণ (Description)</label>
+                    <textarea id="pDesc" class="custom-input" rows="2" placeholder="সার্ভিসের বর্ণনা..."></textarea>
+                </div>
+
+                <button class="btn-glow" id="btnPublishProduct" onclick="publishNewProduct()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> পাবলিশ করুন (Publish)
+                </button>
+            </div>
+
+            <!-- বিদ্যমান প্রোডাক্ট তালিকা -->
+            <div class="card-header-title"><i class="fa-solid fa-boxes-stacked"></i> বর্তমান লাইভ প্রোডাক্টসমূহ</div>
+            <div id="activeProductsList"></div>
+        </section>
+
+        <!-- ================= ৪. ব্যানার সেটিংস ================= -->
+        <section id="panel-banners" class="tab-panel">
+            <div class="glass-card">
+                <div class="card-header-title"><i class="fa-solid fa-images"></i> হিরো স্লাইডার ব্যানার ম্যানেজার</div>
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 14px;">ফোন থেকে ছবি আপলোড করলেই ওয়েবসাইটের ৩টি স্লাইডার ব্যানার বদলে যাবে।</p>
+                
+                <div class="form-group">
+                    <label>ব্যানার ১ (Slot 1)</label>
+                    <input type="file" id="bannerFile1" accept="image/*" class="custom-input">
+                </div>
+                <div class="form-group">
+                    <label>ব্যানার ২ (Slot 2)</label>
+                    <input type="file" id="bannerFile2" accept="image/*" class="custom-input">
+                </div>
+                <div class="form-group">
+                    <label>ব্যানার ৩ (Slot 3)</label>
+                    <input type="file" id="bannerFile3" accept="image/*" class="custom-input">
+                </div>
+
+                <button class="btn-glow" onclick="updateHeroBanners()">
+                    <i class="fa-solid fa-check-double"></i> ব্যানার আপডেট করুন
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= ৫. পেমেন্ট ও অবতার ম্যানেজার ================= -->
+        <section id="panel-settings" class="tab-panel">
+            <div class="glass-card">
+                <div class="card-header-title"><i class="fa-solid fa-wallet"></i> পেমেন্ট মেথড সেটিংস (bKash & Nagad)</div>
+                <div class="form-group">
+                    <label>বিকাশ নম্বর (Personal)</label>
+                    <input type="tel" id="setBkashNo" class="custom-input" placeholder="01812XXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>বিকাশ কিউআর কোড (QR Image Upload)</label>
+                    <input type="file" id="setBkashQrFile" accept="image/*" class="custom-input">
+                </div>
+                <div class="form-group">
+                    <label>নগদ নম্বর (Personal)</label>
+                    <input type="tel" id="setNagadNo" class="custom-input" placeholder="01700XXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>নগদ কিউআর কোড (QR Image Upload)</label>
+                    <input type="file" id="setNagadQrFile" accept="image/*" class="custom-input">
+                </div>
+                <button class="btn-glow" onclick="savePaymentSettings()">
+                    <i class="fa-solid fa-floppy-disk"></i> পেমেন্ট তথ্য সংরক্ষণ করুন
+                </button>
+            </div>
+
+            <!-- ৬টি অবতার ম্যানেজার -->
+            <div class="glass-card">
+                <div class="card-header-title"><i class="fa-solid fa-user-gear"></i> কিউট অবতার ম্যানেজার (৬টি ছবি)</div>
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">কাস্টমারদের পছন্দের জন্য ৬টি অবতারের ছবি আপনার ফোন থেকে সেট করুন।</p>
+                <div class="form-group">
+                    <label>অবতারসমূহ আপলোড করুন (একত্রে ৬টি ছবি সিলেক্ট করুন)</label>
+                    <input type="file" id="avatarMultiFiles" accept="image/*" multiple class="custom-input">
+                </div>
+                <button class="btn-glow" style="background: linear-gradient(135deg, #7c3aed, #4f46e5);" onclick="uploadCustomAvatars()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> অবতার সেট করুন
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- অ্যাডমিন ড্যাশবোর্ড বটম বার -->
+    <nav class="admin-nav" id="adminBottomNav" style="display: none;">
+        <button class="nav-btn active" onclick="switchAdminTab('panel-dashboard', this)"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></button>
+        <button class="nav-btn" onclick="switchAdminTab('panel-orders', this)"><i class="fa-solid fa-receipt"></i><span>Orders</span></button>
+        <button class="nav-btn" onclick="switchAdminTab('panel-products', this)"><i class="fa-solid fa-box-open"></i><span>Products</span></button>
+        <button class="nav-btn" onclick="switchAdminTab('panel-banners', this)"><i class="fa-solid fa-images"></i><span>Banners</span></button>
+        <button class="nav-btn" onclick="switchAdminTab('panel-settings', this)"><i class="fa-solid fa-gear"></i><span>Settings</span></button>
+    </nav>
+  <script>
+        // আপনার দেওয়া ফায়ারবেস কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyCdurWlOanpALeEN3Dd5sFaw9RcxNAfzbE",
+            authDomain: "socialboost-bd.firebaseapp.com",
+            projectId: "socialboost-bd",
+            storageBucket: "socialboost-bd.firebasestorage.app",
+            messagingSenderId: "137960870147",
+            appId: "1:137960870147:web:e1b3fcb343fef04dff5936",
+            measurementId: "G-F5TG19DK71"
+        };
+
+        // ফায়ারবেস ইনিশিয়ালাইজেশন
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // অ্যাডমিন পাসওয়ার্ড যাচাই
+        const ADMIN_SECRET = "1234@@1234Ritu";
+
+        function showToast(msg, isSuccess = true) {
+            const toast = document.getElementById('appToast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.querySelector('i').style.color = isSuccess ? 'var(--success-green)' : 'var(--danger-red)';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function verifyAdminAccess() {
+            const pass = document.getElementById('adminSecretPass').value.trim();
+            if (pass === ADMIN_SECRET) {
+                sessionStorage.setItem('sb_admin_logged', 'true');
+                unlockAdminDashboard();
+                showToast("অ্যাডমিন অ্যাক্সেস সফল হয়েছে!");
+            } else {
+                showToast("ভুল অ্যাডমিন পাসওয়ার্ড!", false);
+            }
+        }
+
+        function unlockAdminDashboard() {
+            document.getElementById('panel-auth').classList.remove('active');
+            document.getElementById('panel-dashboard').classList.add('active');
+            document.getElementById('adminBottomNav').style.display = 'flex';
+            startRealtimeListeners();
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('sb_admin_logged');
+            location.reload();
+        }
+
+        function switchAdminTab(panelId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // রিয়েল-টাইম ফায়ারবেস লিসেনার
+        let globalOrders = [];
+
+        function startRealtimeListeners() {
+            // ১. লাইভ অর্ডার লিসেনার
+            db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+                globalOrders = [];
+                snapshot.forEach(doc => globalOrders.push({ docId: doc.id, ...doc.data() }));
+                renderAdminOrders();
+                calculateDashboardMetrics();
+            }, error => {
+                console.error("Firestore Listen Error:", error);
+            });
+
+            // ২. লাইভ প্রোডাক্ট লিসেনার
+            db.collection("products").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+                const list = [];
+                snapshot.forEach(doc => list.push({ docId: doc.id, ...doc.data() }));
+                renderAdminProducts(list);
+                document.getElementById('sumActiveProducts').innerText = list.length;
+            });
+        }
+
+        function calculateDashboardMetrics() {
+            let revenue = 0;
+            let processing = 0;
+
+            globalOrders.forEach(o => {
+                const priceNum = parseInt(o.price?.replace(/[^0-9]/g, '')) || 0;
+                if (o.status === "Completed") revenue += priceNum;
+                if (o.status === "Processing") processing++;
+            });
+
+            document.getElementById('sumRevenue').innerText = '৳' + revenue.toLocaleString('en-US');
+            document.getElementById('sumTotalOrders').innerText = globalOrders.length;
+            document.getElementById('sumProcessingOrders').innerText = processing;
+            document.getElementById('ordersCountBadge').innerText = globalOrders.length + ' Orders';
+        }
+
+        function renderAdminOrders() {
+            const feed = document.getElementById('fullOrdersFeed');
+            const recent = document.getElementById('dashboardRecentOrders');
+
+            if (globalOrders.length === 0) {
+                const emptyHTML = `<p style="text-align:center;padding:25px;font-size:12px;color:var(--text-muted);">এখনও কোনো লাইভ অর্ডার আসেনি।</p>`;
+                feed.innerHTML = emptyHTML;
+                recent.innerHTML = emptyHTML;
+                return;
+            }
+
+            const cardsHTML = globalOrders.map(o => {
+                const isProc = o.status === 'Processing';
+                const badgeClass = isProc ? 'badge-proc' : 'badge-done';
+                const cleanPhone = o.phone ? o.phone.replace(/[^0-9]/g, '') : '';
+
+                return `
+                    <div class="order-card">
+                        <div class="order-meta-row">
+                            <strong style="color:var(--brand-orange);">${o.id || o.docId}</strong>
+                            <span class="order-status-badge ${badgeClass}">${o.status}</span>
+                        </div>
+                        <div style="font-size:12.5px; font-weight:700; margin:4px 0;">${o.title} — ${o.pkg}</div>
+                        <div class="order-meta-row"><span>পেমেন্ট: <strong>${o.price}</strong> (${o.paymentMethod || 'bKash'})</span><span>Trx: <strong>${o.trx}</strong></span></div>
+                        <div class="order-meta-row"><span>সময়: ${o.time || 'Today'}</span><span>কাস্টমার: ${o.phone || 'N/A'}</span></div>
+                        
+                        <div class="order-action-btns">
+                            <a href="${o.link}" target="_blank" class="btn-act" style="background:#1e293b; color:var(--brand-cyan);"><i class="fa-solid fa-arrow-up-right-from-square"></i> লিংক ওপেন</a>
+                            <a href="https://wa.me/88${cleanPhone}" target="_blank" class="btn-act" style="background:rgba(16,185,129,0.15); color:var(--success-green);"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                            ${isProc ? `<button class="btn-act" style="background:var(--brand-orange); color:white;" onclick="updateOrderStatus('${o.docId}', 'Completed')"><i class="fa-solid fa-check"></i> Complete</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            feed.innerHTML = cardsHTML;
+            recent.innerHTML = globalOrders.slice(0, 3).map(o => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #1f2937; font-size:11.5px;">
+                    <div><strong>${o.id}</strong> - ${o.title}</div>
+                    <div style="color:var(--brand-orange); font-weight:800;">${o.price}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateOrderStatus(docId, newStatus) {
+            db.collection("orders").doc(docId).update({ status: newStatus }).then(() => {
+                showToast(`অর্ডারটি ${newStatus} করা হয়েছে!`);
+            }).catch(e => showToast("ত্রুটি: " + e.message, false));
+        }
+
+        // প্রোডাক্ট পাবলিশ লজিক
+        async function publishNewProduct() {
+            const title = document.getElementById('pTitle').value.trim();
+            const rate = parseInt(document.getElementById('pRate').value);
+            const category = document.getElementById('pCategory').value;
+            const platform = document.getElementById('pPlatform').value;
+            const presets = document.getElementById('pPresets').value.trim();
+            const desc = document.getElementById('pDesc').value.trim();
+            const fileInput = document.getElementById('pImageFile');
+
+            if (!title || !rate) {
+                showToast("টাইটেল এবং রেট অবশ্যই পূরণ করতে হবে!", false);
+                return;
+            }
+
+            const btn = document.getElementById('btnPublishProduct');
+            btn.innerText = "আপলোড হচ্ছে...";
+            btn.disabled = true;
+
+            try {
+                let imgUrl = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80";
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const storageRef = storage.ref(`products/${Date.now()}_${file.name}`);
+                    await storageRef.put(file);
+                    imgUrl = await storageRef.getDownloadURL();
+                }
+
+                await db.collection("products").add({
+                    title, rate, category, platform, presets, desc, imgUrl,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                showToast("প্রোডাক্ট সফলভাবে পাবলিশ হয়েছে!");
+                document.getElementById('pTitle').value = '';
+                document.getElementById('pRate').value = '';
+                fileInput.value = '';
+            } catch (err) {
+                showToast("আপলোড ব্যর্থ: " + err.message, false);
+            } finally {
+                btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> পাবলিশ করুন (Publish)`;
+                btn.disabled = false;
+            }
+        }
+
+        function renderAdminProducts(list) {
+            const container = document.getElementById('activeProductsList');
+            if (list.length === 0) {
+                container.innerHTML = `<p style="font-size:11.5px;color:var(--text-muted);text-align:center;padding:15px;">কোনো প্রোডাক্ট যোগ করা হয়নি।</p>`;
+                return;
+            }
+            container.innerHTML = list.map(p => `
+                <div class="order-card" style="display:flex; gap:10px; align-items:center;">
+                    <img src="${p.imgUrl}" style="width:45px;height:45px;border-radius:10px;object-fit:cover;">
+                    <div style="flex-grow:1;">
+                        <h4 style="font-size:12px;">${p.title}</h4>
+                        <span style="font-size:10px;color:var(--brand-orange);font-weight:700;">৳${p.rate} / 1k [${p.category}]</span>
+                    </div>
+                    <button onclick="deleteProduct('${p.docId}')" style="background:none;border:none;color:var(--danger-red);font-size:14px;cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function deleteProduct(docId) {
+            if (confirm("আপনি কি নিশ্চিত এই প্রোডাক্টটি মুছে ফেলতে চান?")) {
+                db.collection("products").doc(docId).delete().then(() => showToast("প্রোডাক্ট মুছে ফেলা হয়েছে!"));
+            }
+        }
+
+        // ব্যানার আপডেট লজিক
+        async function updateHeroBanners() {
+            showToast("ব্যানার আপলোড হচ্ছে, অপেক্ষা করুন...");
+            try {
+                const b1 = document.getElementById('bannerFile1').files[0];
+                const b2 = document.getElementById('bannerFile2').files[0];
+                const b3 = document.getElementById('bannerFile3').files[0];
+                let urls = {};
+
+                if (b1) { const ref1 = storage.ref(`banners/b1_${Date.now()}`); await ref1.put(b1); urls.banner1 = await ref1.getDownloadURL(); }
+                if (b2) { const ref2 = storage.ref(`banners/b2_${Date.now()}`); await ref2.put(b2); urls.banner2 = await ref2.getDownloadURL(); }
+                if (b3) { const ref3 = storage.ref(`banners/b3_${Date.now()}`); await ref3.put(b3); urls.banner3 = await ref3.getDownloadURL(); }
+
+                await db.collection("site_settings").doc("banners").set(urls, { merge: true });
+                showToast("হিরো ব্যানার সফলভাবে আপডেট হয়েছে!");
+            } catch (e) {
+                showToast("ব্যানার ত্রুটি: " + e.message, false);
+            }
+        }
+
+        // পেমেন্ট ও কিউআর সেভ লজিক
+        async function savePaymentSettings() {
+            const bkashNo = document.getElementById('setBkashNo').value.trim();
+            const nagadNo = document.getElementById('setNagadNo').value.trim();
+            const bQrFile = document.getElementById('setBkashQrFile').files[0];
+            const nQrFile = document.getElementById('setNagadQrFile').files[0];
+
+            showToast("পেমেন্ট ডেটা সেভ হচ্ছে...");
+            try {
+                let payData = {};
+                if (bkashNo) payData.bkashNumber = bkashNo;
+                if (nagadNo) payData.nagadNumber = nagadNo;
+                if (bQrFile) { const ref = storage.ref(`qr/bkash_${Date.now()}`); await ref.put(bQrFile); payData.bkashQr = await ref.getDownloadURL(); }
+                if (nQrFile) { const ref = storage.ref(`qr/nagad_${Date.now()}`); await ref.put(nQrFile); payData.nagadQr = await ref.getDownloadURL(); }
+
+                await db.collection("site_settings").doc("payments").set(payData, { merge: true });
+                showToast("পেমেন্ট ও QR তথ্য সফলভাবে সংরক্ষিত!");
+            } catch (e) {
+                showToast("ত্রুটি: " + e.message, false);
+            }
+        }
+
+        // ৬টি কিউট অবতার আপলোড
+        async function uploadCustomAvatars() {
+            const files = document.getElementById('avatarMultiFiles').files;
+            if (files.length === 0) { showToast("অন্তত একটি অবতারের ছবি দিন!", false); return; }
+            showToast("অবতার আপলোড হচ্ছে...");
+            try {
+                let avList = [];
+                for (let i = 0; i < files.length; i++) {
+                    const ref = storage.ref(`avatars/av_${i}_${Date.now()}`);
+                    await ref.put(files[i]);
+                    const url = await ref.getDownloadURL();
+                    avList.push({ id: i+1, url: url, title: `Avatar ${i+1}` });
+                }
+                await db.collection("site_settings").doc("avatars").set({ list: avList });
+                showToast("সকল অবতার সফলভাবে সেভ হয়েছে!");
+            } catch (e) {
+                showToast("অবতার ত্রুটি: " + e.message, false);
+            }
+        }
+
+        // অটো সেশন চেক
+        if (sessionStorage.getItem('sb_admin_logged') === 'true') {
+            unlockAdminDashboard();
+        }
+    </script>
+</body>
+</html>
