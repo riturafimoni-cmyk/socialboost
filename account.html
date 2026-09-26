@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>আমার অ্যাকাউন্ট - SocialBoost</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- হেডার -->
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="menu-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="logo">Social<span>Boost</span></div>
+        </div>
+        <div class="cart-icon" onclick="location.href='orders.html'">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="cart-badge" id="orderBadge">0</span>
+        </div>
+    </header>
+
+    <div class="page-container">
+
+        <!-- ১. লগইন / সাইন-আপ সেকশন (যদি লগইন করা না থাকে) -->
+        <section id="authSection" class="auth-card" style="display: none;">
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tabLogin" onclick="setAuthTab('login')">লগইন</button>
+                <button class="auth-tab-btn" id="tabReg" onclick="setAuthTab('reg')">নতুন অ্যাকাউন্ট</button>
+            </div>
+
+            <!-- লগইন ফর্ম -->
+            <form id="formLogin" onsubmit="submitLogin(event)">
+                <div class="input-group">
+                    <label>মোবাইল নম্বর</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="logPhone" placeholder="017XXXXXXXX" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>পাসওয়ার্ড</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="logPass" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="auth-submit-btn">লগইন করুন</button>
+            </form>
+
+            <!-- রেজিস্ট্রেশন ফর্ম -->
+            <form id="formReg" style="display: none;" onsubmit="submitRegister(event)">
+                <div class="input-group">
+                    <label>আপনার নাম</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="regName" placeholder="আপনার পুরো নাম" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>মোবাইল নম্বর (হোয়াটসঅ্যাপ)</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="regPhone" placeholder="017XXXXXXXX" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>পাসওয়ার্ড</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="regPass" placeholder="কমপক্ষে ৬ ডিজিট" required>
+                    </div>
+                </div>
+                <button type="submit" class="auth-submit-btn">অ্যাকাউন্ট তৈরি করুন</button>
+            </form>
+        </section>
+
+
+        <!-- ২. মূল প্রোফাইল ড্যাশবোর্ড (স্ক্রিনশটের হুবহু ডিজাইন) -->
+        <section id="profileSection" style="display: none;">
+            
+            <div class="sec-title-bar">
+                <h2>আমার প্রোফাইল</h2>
+            </div>
+
+            <!-- ইউজার তথ্য কার্ড -->
+            <div class="user-profile-card">
+                <div class="user-avatar">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=user123" alt="Avatar">
+                </div>
+                <div class="user-meta">
+                    <h3 id="uName">User123</h3>
+                    <p id="uPhone">017XXXXXXXX</p>
+                    <span class="verified-tag"><i class="fa-solid fa-circle-check"></i> Verified Account</span>
+                </div>
+                <button class="edit-prof-btn" onclick="openEditModal()"><i class="fa-solid fa-pen-to-square"></i></button>
+            </div>
+
+            <!-- অর্ডার স্ট্যাটাস ৩টি কাউন্টার কার্ড -->
+            <div class="stats-grid">
+                <div class="stat-card" onclick="location.href='orders.html'">
+                    <i class="fa-regular fa-clipboard" style="color: #64748b;"></i>
+                    <h4 id="statTotal">0</h4>
+                    <p>Total Orders</p>
+                </div>
+                <div class="stat-card" onclick="location.href='orders.html'">
+                    <i class="fa-regular fa-clock" style="color: #3b82f6;"></i>
+                    <h4 id="statProcessing">0</h4>
+                    <p>Processing</p>
+                </div>
+                <div class="stat-card" onclick="location.href='orders.html'">
+                    <i class="fa-regular fa-circle-check" style="color: #10b981;"></i>
+                    <h4 id="statCompleted">0</h4>
+                    <p>Completed</p>
+                </div>
+            </div>
+
+            <!-- মেনু লিস্ট আইটেমস -->
+            <div class="menu-list">
+                <a href="orders.html" class="menu-row">
+                    <div class="m-left"><i class="fa-solid fa-box" style="color: #3b82f6;"></i><span>আমার অর্ডার</span></div>
+                    <i class="fa-solid fa-angle-right arrow"></i>
+                </a>
+                <a href="notifications.html" class="menu-row">
+                    <div class="m-left"><i class="fa-regular fa-bell" style="color: #f59e0b;"></i><span>নোটিফিকেশন</span></div>
+                    <i class="fa-solid fa-angle-right arrow"></i>
+                </a>
+                <a href="https://wa.me/8801XXXXXXXXX" target="_blank" class="menu-row">
+                    <div class="m-left"><i class="fa-brands fa-whatsapp" style="color: #22c55e;"></i><span>সাপোর্ট (WhatsApp)</span></div>
+                    <i class="fa-solid fa-angle-right arrow"></i>
+                </a>
+                <div class="menu-row" onclick="openSettings()">
+                    <div class="m-left"><i class="fa-solid fa-gear" style="color: #8b5cf6;"></i><span>সেটিংস</span></div>
+                    <i class="fa-solid fa-angle-right arrow"></i>
+                </div>
+                <div class="menu-row logout-row" onclick="accountLogout()">
+                    <div class="m-left"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i><span>লগআউট</span></div>
+                    <i class="fa-solid fa-angle-right arrow"></i>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- বটম ন্যাভিগেশন বার -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="index.html#products" class="nav-item">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Products</span>
+        </a>
+        <a href="index.html#offers" class="nav-item">
+            <i class="fa-solid fa-fire"></i>
+            <span>Special Offer</span>
+        </a>
+        <a href="index.html#bundles" class="nav-item">
+            <i class="fa-solid fa-box-archive"></i>
+            <span>Bundle Pack</span>
+        </a>
+        <a href="account.html" class="nav-item active">
+            <i class="fa-regular fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- প্রোফাইল সংশ্লিষ্ট স্ক্রিপ্ট -->
+    <script>
+        function checkUser() {
+            const user = JSON.parse(localStorage.getItem('sb_user') || 'null');
+            const authSec = document.getElementById('authSection');
+            const profSec = document.getElementById('profileSection');
+
+            if (!user) {
+                authSec.style.display = 'block';
+                profSec.style.display = 'none';
+            } else {
+                authSec.style.display = 'none';
+                profSec.style.display = 'block';
+                document.getElementById('uName').innerText = user.name;
+                document.getElementById('uPhone').innerText = user.phone;
+                loadOrderStats();
+            }
+        }
+
+        function setAuthTab(tab) {
+            document.getElementById('formLogin').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('formReg').style.display = tab === 'reg' ? 'block' : 'none';
+            document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('tabReg').classList.toggle('active', tab === 'reg');
+        }
+
+        function submitRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const pass = document.getElementById('regPass').value;
+
+            const user = { name, phone, pass };
+            localStorage.setItem('sb_user', JSON.stringify(user));
+            alert('অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!');
+            checkUser();
+        }
+
+        function submitLogin(e) {
+            e.preventDefault();
+            const phone = document.getElementById('logPhone').value.trim();
+            const pass = document.getElementById('logPass').value;
+            const savedUser = JSON.parse(localStorage.getItem('sb_user') || 'null');
+
+            if (savedUser && savedUser.phone === phone && savedUser.pass === pass) {
+                checkUser();
+            } else {
+                alert('নম্বর অথবা পাসওয়ার্ড ভুল হয়েছে!');
+            }
+        }
+
+        function accountLogout() {
+            if(confirm('লগআউট করতে চান?')) {
+                localStorage.removeItem('sb_user');
+                checkUser();
+            }
+        }
+
+        function loadOrderStats() {
+            const orders = JSON.parse(localStorage.getItem('sb_orders') || '[]');
+            document.getElementById('statTotal').innerText = orders.length;
+            document.getElementById('statProcessing').innerText = orders.filter(o => o.status === 'Processing').length;
+            document.getElementById('statCompleted').innerText = orders.filter(o => o.status === 'Completed').length;
+            document.getElementById('orderBadge').innerText = orders.length;
+        }
+
+        function openSettings() {
+            alert('সেটিংস স্ক্রিন শীঘ্রই আসছে!');
+        }
+
+        function openEditModal() {
+            alert('প্রোফাইল এডিট অপশন চালু হচ্ছে!');
+        }
+
+        // পেজ লোড হলে চেক করবে
+        checkUser();
+    </script>
+</body>
+</html>
