@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Social Boost - Product & Order</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-orange: #ff5400;
+            --brand-orange-dark: #e04a00;
+            --peach-bg: #fff6ee;
+            --peach-border: #ffd8be;
+            --bg-body: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-body); color: var(--text-dark); padding-bottom: 30px; }
+
+        header {
+            background: var(--brand-orange); padding: 12px 16px; display: flex; align-items: center;
+            justify-content: space-between; color: white; position: sticky; top: 0; z-index: 100;
+        }
+        .header-left { display: flex; align-items: center; gap: 14px; }
+        .head-btn { font-size: 19px; color: white; cursor: pointer; border: none; background: none; }
+        .logo-txt { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+        .header-right { display: flex; align-items: center; gap: 16px; font-size: 19px; }
+        .cart-wrapper { position: relative; cursor: pointer; }
+        .cart-badge {
+            position: absolute; top: -7px; right: -7px; background: white; color: var(--brand-orange);
+            font-size: 10px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;
+        }
+
+        .page-body { padding: 14px; max-width: 480px; margin: 0 auto; }
+        .step-view { display: none; }
+        .step-view.active { display: block; }
+
+        .product-hero-card {
+            background: #ffffff; border-radius: 20px; padding: 18px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid var(--border); margin-bottom: 14px;
+        }
+        .product-hero-img { width: 100%; max-width: 260px; height: 200px; object-fit: cover; border-radius: 16px; margin: 0 auto; display: block; }
+
+        .title-rating-row { display: flex; justify-content: space-between; align-items: flex-start; margin: 12px 0 6px; }
+        .prod-title { font-size: 19px; font-weight: 800; color: #0f172a; }
+        .badge-bestseller {
+            background: #ff5400; color: white; font-size: 11px; font-weight: 700;
+            padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px;
+        }
+        .rating-box { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #f59e0b; margin-bottom: 14px; }
+        .rating-box span { color: var(--text-muted); font-weight: 600; }
+
+        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+        .preset-btn {
+            background: #ffffff; border: 1px solid var(--border); border-radius: 12px;
+            padding: 10px 4px; text-align: center; cursor: pointer; transition: 0.2s;
+        }
+        .preset-btn strong { font-size: 14px; display: block; color: #1e293b; }
+        .preset-btn span { font-size: 10.5px; color: var(--text-muted); }
+        .preset-btn.active {
+            border-color: var(--brand-orange); background: var(--peach-bg);
+        }
+        .preset-btn.active strong, .preset-btn.active span { color: var(--brand-orange); }
+
+        .field-label { font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 6px; display: block; }
+        .input-pill {
+            background: #ffffff; border: 1px solid var(--border); border-radius: 10px;
+            padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+        }
+        .input-pill i { color: #94a3b8; font-size: 14px; }
+        .input-pill input { border: none; outline: none; background: transparent; width: 100%; font-size: 13px; color: #0f172a; }
+
+        /* হাইলাইটেড প্রিমিয়াম প্রাইজ বক্স (স্ক্রিনশটের মতো নিখুঁত) */
+        .price-banner-box {
+            background: var(--peach-bg);
+            border: 1.5px solid var(--peach-border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+        }
+        .price-label-text {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .price-flex-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .price-highlight-val {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--brand-orange);
+            line-height: 1;
+            letter-spacing: -0.5px;
+        }
+        .price-sub-caption {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .buy-action-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+        .stepper-box {
+            background: #ffffff; border: 1px solid var(--border); border-radius: 10px;
+            display: flex; align-items: center; padding: 5px 8px; gap: 12px;
+        }
+        .step-ch-btn { background: none; border: none; font-size: 16px; font-weight: 700; color: #64748b; cursor: pointer; width: 24px; height: 30px; }
+        .stepper-val { font-size: 14px; font-weight: 800; min-width: 16px; text-align: center; }
+        .btn-buynow {
+            flex-grow: 1; background: var(--brand-orange); color: white; border: none;
+            padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,84,0,0.3);
+        }
+
+        .accordion-card {
+            background: #ffffff; border-radius: 12px; border: 1px solid var(--border);
+            padding: 12px 14px; cursor: pointer;
+        }
+        .acc-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; }
+        .acc-content { font-size: 11.5px; color: var(--text-muted); line-height: 1.5; margin-top: 8px; display: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <button class="head-btn" id="headerBackBtn" onclick="handleNavigationBack()"><i class="fa-solid fa-bars"></i></button>
+            <div class="logo-txt">Social <span>Boost</span></div>
+        </div>
+        <div class="header-right">
+            <div class="cart-wrapper" onclick="location.href='account.html'">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge">3</span>
+            </div>
+            <i class="fa-regular fa-circle-user" style="cursor: pointer;" onclick="location.href='account.html'"></i>
+        </div>
+    </header>
+
+    <div class="page-body">
+
+        <!-- ================= ধাপ ০: প্রোডাক্ট কনফিগারেশন ================= -->
+        <section id="step-product-config" class="step-view active">
+            <div class="product-hero-card">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80" alt="Instagram 3D" class="product-hero-img">
+            </div>
+
+            <div class="title-rating-row">
+                <h1 class="prod-title" id="prodTitleText">Instagram Followers</h1>
+                <div class="badge-bestseller"><i class="fa-solid fa-fire"></i> Best Seller</div>
+            </div>
+
+            <div class="rating-box">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span>4.9 (2.1K)</span>
+            </div>
+
+            <!-- প্রিসেট বাটন -->
+            <div class="preset-grid">
+                <div class="preset-btn active" onclick="selectPreset(1000, this)">
+                    <strong>1,000</strong>
+                    <span>Followers</span>
+                </div>
+                <div class="preset-btn" onclick="selectPreset(2000, this)">
+                    <strong>2,000</strong>
+                    <span>Followers</span>
+                </div>
+                <div class="preset-btn" onclick="selectPreset(3000, this)">
+                    <strong>3,000</strong>
+                    <span>Followers</span>
+                </div>
+            </div>
+
+            <label class="field-label">Custom Quantity</label>
+            <div class="input-pill">
+                <i class="fa-solid fa-users"></i>
+                <input type="number" id="customQtyInput" placeholder="Enter quantity (e.g. 5000)" oninput="handleCustomQuantity(this.value)">
+            </div>
+            <small id="qtyErrorText" style="color: #ef4444; font-size: 11px; display: none; margin-top: -10px; margin-bottom: 10px; font-weight: 600;">সর্বনিম্ন কোয়ান্টিটি ১,০০০ হতে হবে</small>
+
+            <!-- হাইলাইটেড ১৫০ টাকা বক্স -->
+            <div class="price-banner-box">
+                <div class="price-label-text">Price</div>
+                <div class="price-flex-row">
+                    <div class="price-highlight-val">৳<span id="displayPrice">150</span></div>
+                    <div class="price-sub-caption" id="displayQtySub">for 1,000 Followers</div>
+                </div>
+            </div>
+
+            <!-- বাই বার -->
+            <div class="buy-action-bar">
+                <div class="stepper-box">
+                    <button class="step-ch-btn" onclick="changeStepper(-1)">-</button>
+                    <span class="stepper-val" id="stepperValText">1</span>
+                    <button class="step-ch-btn" onclick="changeStepper(1)">+</button>
+                </div>
+                <button class="btn-buynow" onclick="proceedToOrderInfo()">
+                    <i class="fa-solid fa-cart-shopping"></i> Buy Now
+                </button>
+            </div>
+
+            <!-- ডেসক্রিপশন -->
+            <div class="accordion-card" onclick="toggleAccordion()">
+                <div class="acc-head">
+                    <span>Description</span>
+                    <i class="fa-solid fa-chevron-down" id="accIcon"></i>
+                </div>
+                <div class="acc-content" id="accContent">
+                    ১০০% নন-ড্রপ রিয়েল ইনস্টাগ্রাম ফলোয়ার। অর্ডারের ৫-১৫ মিনিটের মধ্যে শুরু হয় এবং কোনো অ্যাকাউন্টের পাসওয়ার্ড প্রয়োজন হয় না।
+                </div>
+            </div>
+        </section>
+        <style>
+            .checkout-stepper-bar {
+                display: flex; justify-content: space-between; position: relative; margin: 10px 0 20px; text-align: center;
+            }
+            .checkout-stepper-bar::before {
+                content: ''; position: absolute; top: 12px; left: 20px; right: 20px; height: 2px; background: #e2e8f0; z-index: 1;
+            }
+            .c-step { position: relative; z-index: 2; width: 33.33%; font-size: 10px; font-weight: 700; color: #94a3b8; }
+            .c-circle {
+                width: 25px; height: 25px; border-radius: 50%; background: #ffffff; border: 2px solid #cbd5e1;
+                margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 11px;
+            }
+            .c-step.active .c-circle { background: var(--brand-orange); border-color: var(--brand-orange); color: white; }
+            .c-step.active { color: var(--brand-orange); }
+            .c-step.completed .c-circle { background: #10b981; border-color: #10b981; color: white; }
+            .c-step.completed { color: #10b981; }
+
+            .box-card {
+                background: #ffffff; border-radius: 16px; padding: 16px; border: 1px solid var(--border);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 14px;
+            }
+            .box-card-title {
+                display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800;
+                color: #0f172a; margin-bottom: 14px;
+            }
+            .box-card-title i {
+                background: var(--peach-bg); color: var(--brand-orange); width: 28px; height: 28px;
+                border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px;
+            }
+            .field-row { margin-bottom: 12px; }
+            .field-row label { font-size: 11.5px; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
+            .field-row label span { color: #ef4444; }
+            .form-pill {
+                background: #ffffff; border: 1px solid var(--border); border-radius: 10px;
+                padding: 10px 12px; display: flex; align-items: center; gap: 10px;
+            }
+            .form-pill input { border: none; outline: none; background: transparent; width: 100%; font-size: 12.5px; }
+
+            .safety-note-box {
+                background: var(--peach-bg); border-radius: 12px; padding: 10px 12px; font-size: 11px;
+                color: #9a3412; display: flex; gap: 10px; line-height: 1.4; margin: 14px 0;
+            }
+            .safety-note-box i { font-size: 18px; color: var(--brand-orange); }
+
+            .pay-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+            .pay-tab-btn {
+                background: #ffffff; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px;
+                display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px;
+                font-weight: 800; cursor: pointer;
+            }
+            .pay-tab-btn.active { border-color: #ec4899; background: #fdf2f8; color: #be185d; }
+            .pay-tab-btn.active.nagad { border-color: #ea580c; background: #fff7ed; color: #c2410c; }
+
+            .pay-detail-grid { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+            .qr-placeholder {
+                width: 120px; height: 120px; border-radius: 12px; border: 1px solid var(--border);
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                background: #ffffff; padding: 6px; text-align: center;
+            }
+            .qr-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+            .pay-meta-col { flex-grow: 1; }
+            .copy-info-card {
+                background: var(--peach-bg); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px;
+                display: flex; justify-content: space-between; align-items: center;
+            }
+            .copy-info-card strong { font-size: 13px; color: #0f172a; }
+            .copy-info-card span { font-size: 10px; color: var(--text-muted); display: block; }
+            .copy-btn { color: var(--brand-orange); cursor: pointer; font-size: 14px; padding: 4px; }
+
+            .pay-rules-list { font-size: 11px; color: #475569; margin: 12px 0; }
+            .pay-rules-list li { margin-bottom: 5px; list-style-position: inside; }
+
+            .success-hero { text-align: center; padding: 16px 0 20px; }
+            .success-circle-icon {
+                width: 70px; height: 70px; background: #22c55e; color: white; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center; font-size: 34px; margin: 0 auto 12px;
+                box-shadow: 0 8px 20px rgba(34,197,94,0.3);
+            }
+            .success-hero h2 { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+            .success-hero p { font-size: 11.5px; color: var(--text-muted); }
+
+            .spec-row { display: flex; justify-content: space-between; font-size: 12px; padding: 7px 0; border-bottom: 1px solid #f8fafc; }
+            .spec-row span { color: var(--text-muted); }
+            .spec-row strong { color: #0f172a; }
+
+            .status-badge-orange { background: #ffedd5; color: #ea580c; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 8px; }
+
+            .order-timeline-stepper { margin: 14px 0; padding-left: 10px; }
+            .t-step { display: flex; gap: 12px; position: relative; padding-bottom: 16px; }
+            .t-step::before { content: ''; position: absolute; left: 11px; top: 22px; bottom: 0; width: 2px; background: #e2e8f0; }
+            .t-step:last-child::before { display: none; }
+            .t-icon { width: 24px; height: 24px; border-radius: 50%; background: #ffffff; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+            .t-step.active .t-icon { background: var(--brand-orange); border-color: var(--brand-orange); color: white; }
+            .t-text h5 { font-size: 12px; font-weight: 700; }
+            .t-text p { font-size: 10px; color: var(--text-muted); }
+        </style>
+
+        <!-- ================= ধাপ ১: Order Information ================= -->
+        <section id="step-order-info" class="step-view">
+            <div class="box-card">
+                <div class="box-card-title">
+                    <i class="fa-solid fa-file-invoice"></i> Order Information
+                </div>
+
+                <div class="field-row">
+                    <label>Name <span>*</span></label>
+                    <div class="form-pill">
+                        <i class="fa-regular fa-user" style="color:#94a3b8;"></i>
+                        <input type="text" id="custNameInput" placeholder="Your full name" required>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <label>WhatsApp Number <span>*</span></label>
+                    <div class="form-pill">
+                        <i class="fa-brands fa-whatsapp" style="color:#22c55e;"></i>
+                        <input type="tel" id="custPhoneInput" placeholder="e.g. 01XXXXXXXXX" required>
+                    </div>
+                </div>
+
+                <!-- পাসওয়ার্ড (লগইন করা থাকলে স্বয়ংক্রিয়ভাবে হাইড থাকবে) -->
+                <div class="field-row" id="authPasswordGroup">
+                    <label>Password <span>*</span></label>
+                    <div class="form-pill">
+                        <i class="fa-solid fa-lock" style="color:#94a3b8;"></i>
+                        <input type="password" id="custPassInput" placeholder="অ্যাকাউন্টের জন্য ৬ ডিজিট পাসওয়ার্ড দিন">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <label>Instagram Profile Link <span>*</span></label>
+                    <div class="form-pill">
+                        <i class="fa-solid fa-link" style="color:#94a3b8;"></i>
+                        <input type="url" id="custTargetLink" placeholder="e.g. https://www.instagram.com/username" required>
+                    </div>
+                </div>
+
+                <div class="safety-note-box">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <div>আপনার তথ্য ১০০% নিরাপদ থাকবে। অর্ডার প্রসেসিং এর জন্য শুধুমাত্র এই তথ্য ব্যবহার করা হবে।</div>
+                </div>
+
+                <button class="btn-buynow" style="width: 100%;" onclick="proceedToPayment()">
+                    <i class="fa-solid fa-cart-shopping"></i> Place Order
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= ধাপ ২: Payment ================= -->
+        <section id="step-payment" class="step-view">
+            <div class="checkout-stepper-bar">
+                <div class="c-step completed"><div class="c-circle"><i class="fa-solid fa-check"></i></div>Order Details</div>
+                <div class="c-step active"><div class="c-circle">2</div>Payment</div>
+                <div class="c-step"><div class="c-circle">3</div>Confirmation</div>
+            </div>
+
+            <div class="box-card">
+                <div class="box-card-title"><i class="fa-solid fa-wallet"></i> Select Payment Method</div>
+
+                <div class="pay-tabs">
+                    <div class="pay-tab-btn active" id="tabBkash" onclick="selectPayMethod('bKash')">
+                        <i class="fa-solid fa-paper-plane" style="color:#ec4899;"></i> bKash
+                    </div>
+                    <div class="pay-tab-btn" id="tabNagad" onclick="selectPayMethod('Nagad')">
+                        <i class="fa-solid fa-bolt" style="color:#ea580c;"></i> নগদ
+                    </div>
+                </div>
+
+                <div class="pay-detail-grid">
+                    <div class="qr-placeholder">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=01812345678" id="payQrImg" alt="QR">
+                    </div>
+                    <div class="pay-meta-col">
+                        <div class="copy-info-card">
+                            <div>
+                                <span id="payMethodLabel">bKash Number</span>
+                                <strong id="payNumberText">01812 345678</strong>
+                            </div>
+                            <i class="fa-regular fa-copy copy-btn" onclick="copyToClipboard('01812 345678', 'নম্বর')"></i>
+                        </div>
+                        <div class="copy-info-card">
+                            <div>
+                                <span>Amount</span>
+                                <strong id="payAmountText">৳150</strong>
+                            </div>
+                            <i class="fa-regular fa-copy copy-btn" onclick="copyToClipboard(currentPayableTotal, 'টাকা')"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <ol class="pay-rules-list">
+                    <li>bKash / Nagad App খুলুন</li>
+                    <li>Send Money এ যান</li>
+                    <li>উপরের নম্বরে সঠিক পরিমাণ টাকা পাঠান</li>
+                    <li>পেমেন্ট করার পর নিচের তথ্য দিন</li>
+                </ol>
+
+                <div class="field-row">
+                    <label>Transaction ID <span>*</span></label>
+                    <div class="form-pill">
+                        <i class="fa-solid fa-receipt" style="color:#94a3b8;"></i>
+                        <input type="text" id="inTrxId" placeholder="Enter Transaction ID (e.g. 7F3K9L2)" required>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <label>Sender Number <span>*</span></label>
+                    <div class="form-pill">
+                        <i class="fa-solid fa-mobile-screen" style="color:#94a3b8;"></i>
+                        <input type="tel" id="inSenderPhone" placeholder="01XXXXXXXXX" required>
+                    </div>
+                </div>
+
+                <button class="btn-buynow" style="width: 100%; margin-top: 10px;" onclick="confirmFinalPayment()">
+                    <i class="fa-solid fa-circle-check"></i> I have sent the payment &gt;
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= ধাপ ৩: Order Confirmation ================= -->
+        <section id="step-confirmation" class="step-view">
+            <div class="checkout-stepper-bar">
+                <div class="c-step completed"><div class="c-circle"><i class="fa-solid fa-check"></i></div>Order Details</div>
+                <div class="c-step completed"><div class="c-circle"><i class="fa-solid fa-check"></i></div>Payment</div>
+                <div class="c-step active"><div class="c-circle"><i class="fa-solid fa-check"></i></div>Confirmation</div>
+            </div>
+
+            <div class="success-hero">
+                <div class="success-circle-icon"><i class="fa-solid fa-check"></i></div>
+                <h2>Order Placed Successfully!</h2>
+                <p>আপনার অর্ডারটি আমাদের কাছে পৌঁছে গেছে। আমরা খুব শিগগিরই প্রসেস করে দেবো।</p>
+            </div>
+
+            <div class="box-card">
+                <div class="box-card-title"><i class="fa-solid fa-file-lines"></i> Order Details</div>
+                <div class="spec-row">
+                    <span>Order ID</span>
+                    <strong style="color:var(--brand-orange); display:flex; align-items:center; gap:6px;">
+                        <span id="finalOrderId">#SB784512</span>
+                        <i class="fa-regular fa-copy copy-btn" onclick="copyToClipboard(document.getElementById('finalOrderId').innerText, 'Order ID')"></i>
+                    </strong>
+                </div>
+                <div class="spec-row"><span>Payment Method</span><strong id="finalPayMethod">bKash</strong></div>
+                <div class="spec-row"><span>Amount</span><strong id="finalPayAmount" style="color:var(--brand-orange); font-size:14px;">৳150</strong></div>
+                <div class="spec-row"><span>Transaction ID</span><strong id="finalTrxId">7F3K9L2</strong></div>
+                <div class="spec-row"><span>Status</span><span class="status-badge-orange"><i class="fa-regular fa-clock"></i> Processing</span></div>
+            </div>
+
+            <div class="box-card">
+                <div class="order-timeline-stepper">
+                    <div class="t-step active"><div class="t-icon"><i class="fa-regular fa-clock"></i></div><div class="t-text"><h5>Order Received</h5><p>Just now</p></div></div>
+                    <div class="t-step"><div class="t-icon"><i class="fa-solid fa-gear"></i></div><div class="t-text"><h5>Processing</h5><p>We are working on your order</p></div></div>
+                    <div class="t-step"><div class="t-icon"><i class="fa-solid fa-paper-plane"></i></div><div class="t-text"><h5>Completed</h5><p>You will be notified once done</p></div></div>
+                </div>
+                <div class="safety-note-box" style="margin-bottom:0;">
+                    <i class="fa-solid fa-circle-info" style="color:#0284c7;"></i>
+                    <div>অর্ডারটি সাধারণত ০ - ৬ ঘণ্টার মধ্যে সম্পন্ন করা হয়। সম্পন্ন হলে আপনাকে WhatsApp এ জানানো হবে।</div>
+                </div>
+            </div>
+
+            <button class="btn-buynow" style="width: 100%; margin-bottom: 10px;" onclick="location.href='index.html'">
+                <i class="fa-solid fa-house"></i> Go to Home
+            </button>
+            <button class="btn-buynow" style="width: 100%; background: #ffffff; color: #1e293b; border: 1px solid var(--border); box-shadow: none;" onclick="location.href='account.html'">
+                <i class="fa-solid fa-list-check"></i> View My Orders
+            </button>
+        </section>
+
+    </div>
+    <script>
+        const RATE_PER_THOUSAND = 150; 
+        const MIN_QUANTITY = 1000;
+
+        let currentQuantity = 1000;
+        let stepperMultiplier = 1;
+        let currentPayableTotal = 150;
+        let selectedPaymentMethod = "bKash";
+        let activeNavigationStep = "step-product-config";
+
+        function checkUserAuthForCheckout() {
+            const loggedUser = JSON.parse(localStorage.getItem('sb_auth_user') || 'null');
+            const passGroup = document.getElementById('authPasswordGroup');
+
+            if (loggedUser) {
+                document.getElementById('custNameInput').value = loggedUser.name || '';
+                document.getElementById('custPhoneInput').value = loggedUser.phone || '';
+                if (passGroup) passGroup.style.display = 'none';
+            } else {
+                if (passGroup) passGroup.style.display = 'block';
+            }
+        }
+
+        function calculateAndUpdatePrice() {
+            const errorText = document.getElementById('qtyErrorText');
+
+            if (currentQuantity < MIN_QUANTITY) {
+                errorText.style.display = 'block';
+                return false;
+            } else {
+                errorText.style.display = 'none';
+            }
+
+            currentPayableTotal = Math.round((currentQuantity / 1000) * RATE_PER_THOUSAND * stepperMultiplier);
+
+            document.getElementById('displayPrice').innerText = currentPayableTotal;
+            document.getElementById('displayQtySub').innerText = `for ${(currentQuantity * stepperMultiplier).toLocaleString('bn-BD')} Followers`;
+            document.getElementById('payAmountText').innerText = '৳' + currentPayableTotal;
+            return true;
+        }
+
+        function selectPreset(qty, element) {
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('customQtyInput').value = '';
+            currentQuantity = qty;
+            calculateAndUpdatePrice();
+        }
+
+        function handleCustomQuantity(val) {
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            const parsed = parseInt(val) || 0;
+            currentQuantity = parsed;
+            calculateAndUpdatePrice();
+        }
+
+        function changeStepper(delta) {
+            stepperMultiplier += delta;
+            if (stepperMultiplier < 1) stepperMultiplier = 1;
+            document.getElementById('stepperValText').innerText = stepperMultiplier;
+            calculateAndUpdatePrice();
+        }
+
+        function toggleAccordion() {
+            const content = document.getElementById('accContent');
+            const icon = document.getElementById('accIcon');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.className = 'fa-solid fa-chevron-down';
+            } else {
+                content.style.display = 'block';
+                icon.className = 'fa-solid fa-chevron-up';
+            }
+        }
+
+        function showStep(stepId) {
+            document.querySelectorAll('.step-view').forEach(v => v.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+            activeNavigationStep = stepId;
+
+            const backBtn = document.getElementById('headerBackBtn');
+            if (stepId === 'step-product-config') {
+                backBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            } else {
+                backBtn.innerHTML = '<i class="fa-solid fa-arrow-left"></i>';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleNavigationBack() {
+            if (activeNavigationStep === 'step-order-info') showStep('step-product-config');
+            else if (activeNavigationStep === 'step-payment') showStep('step-order-info');
+            else if (activeNavigationStep === 'step-confirmation') location.href = 'index.html';
+            else location.href = 'index.html';
+        }
+
+        function proceedToOrderInfo() {
+            if (currentQuantity < MIN_QUANTITY) {
+                alert('দয়া করে সর্বনিম্ন ১,০০০ কোয়ান্টিটি নির্ধারণ করুন!');
+                return;
+            }
+            checkUserAuthForCheckout();
+            showStep('step-order-info');
+        }
+
+        function proceedToPayment() {
+            const name = document.getElementById('custNameInput').value.trim();
+            const phone = document.getElementById('custPhoneInput').value.trim();
+            const link = document.getElementById('custTargetLink').value.trim();
+            const passInput = document.getElementById('custPassInput');
+
+            if (!name || !phone || !link) {
+                alert('দয়া করে আপনার নাম, হোয়াটসঅ্যাপ নম্বর এবং লিংক পূরণ করুন!');
+                return;
+            }
+
+            const loggedUser = JSON.parse(localStorage.getItem('sb_auth_user') || 'null');
+            if (!loggedUser) {
+                const pass = passInput ? passInput.value.trim() : '';
+                if (!pass || pass.length < 6) {
+                    alert('ভবিষ্যতে অর্ডারের আপডেট দেখার জন্য কমপক্ষে ৬ ডিজিটের একটি পাসওয়ার্ড দিন!');
+                    return;
+                }
+                const newUser = { name, phone, pass };
+                localStorage.setItem('sb_auth_user', JSON.stringify(newUser));
+            }
+
+            showStep('step-payment');
+        }
+
+        function selectPayMethod(method) {
+            selectedPaymentMethod = method;
+            const bBtn = document.getElementById('tabBkash');
+            const nBtn = document.getElementById('tabNagad');
+            const numText = document.getElementById('payNumberText');
+            const lbl = document.getElementById('payMethodLabel');
+            const qr = document.getElementById('payQrImg');
+
+            if (method === 'bKash') {
+                bBtn.className = 'pay-tab-btn active';
+                nBtn.className = 'pay-tab-btn';
+                lbl.innerText = 'bKash Number';
+                numText.innerText = '01812 345678';
+                qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=01812345678';
+            } else {
+                bBtn.className = 'pay-tab-btn';
+                nBtn.className = 'pay-tab-btn active nagad';
+                lbl.innerText = 'Nagad Number';
+                numText.innerText = '01700 987654';
+                qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=01700987654';
+            }
+        }
+
+        function copyToClipboard(text, alertLabel) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`${alertLabel} কপি করা হয়েছে: ${text}`);
+            });
+        }
+
+        function confirmFinalPayment() {
+            const trx = document.getElementById('inTrxId').value.trim();
+            const senderPhone = document.getElementById('inSenderPhone').value.trim();
+
+            if (!trx || !senderPhone) {
+                alert('দয়া করে Transaction ID (TrxID) এবং যে নম্বর থেকে টাকা পাঠিয়েছেন তা লিখুন!');
+                return;
+            }
+
+            const randomId = '#SB' + Math.floor(100000 + Math.random() * 900000);
+
+            document.getElementById('finalOrderId').innerText = randomId;
+            document.getElementById('finalPayMethod').innerText = selectedPaymentMethod;
+            document.getElementById('finalPayAmount').innerText = '৳' + currentPayableTotal;
+            document.getElementById('finalTrxId').innerText = trx;
+
+            const newOrderObj = {
+                id: randomId,
+                title: "Instagram Followers",
+                pkg: `${(currentQuantity * stepperMultiplier).toLocaleString('en-US')} Followers`,
+                price: '৳' + currentPayableTotal,
+                time: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                status: "Processing",
+                trx: trx,
+                link: document.getElementById('custTargetLink').value
+            };
+
+            let existingOrders = JSON.parse(localStorage.getItem('sb_orders_list') || '[]');
+            existingOrders.unshift(newOrderObj);
+            localStorage.setItem('sb_orders_list', JSON.stringify(existingOrders));
+
+            showStep('step-confirmation');
+        }
+
+        calculateAndUpdatePrice();
+    </script>
+</body>
+</html>
