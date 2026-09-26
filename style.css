@@ -1,0 +1,221 @@
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --accent-purple: #7c3aed;
+    --bg-body: #f8fafc;
+    --card-bg: #ffffff;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --border-light: #e2e8f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+    padding-bottom: 75px;
+}
+
+/* হেডার */
+header {
+    background: #ffffff;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    gap: 10px;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.menu-btn { font-size: 18px; color: var(--text-dark); background: none; border: none; cursor: pointer; }
+.logo { font-size: 19px; font-weight: 800; cursor: pointer; }
+.logo span { color: var(--accent-purple); }
+.search-pill {
+    flex-grow: 1;
+    background: #f1f5f9;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding: 7px 12px;
+    gap: 6px;
+}
+.search-pill input { border: none; background: transparent; font-size: 12px; width: 100%; outline: none; }
+.cart-icon { position: relative; font-size: 19px; cursor: pointer; }
+.cart-badge {
+    position: absolute;
+    top: -6px; right: -6px;
+    background: #ef4444; color: white;
+    font-size: 10px; width: 16px; height: 16px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;
+}
+
+/* ট্যাব কন্ট্রোল */
+.tab-view { display: none; }
+.tab-view.active { display: block; }
+
+/* হিরো স্লাইডার */
+.slider-container { padding: 10px 12px; position: relative; overflow: hidden; }
+.slider-wrapper { display: flex; transition: transform 0.5s ease-in-out; border-radius: 14px; overflow: hidden; }
+.slide { min-width: 100%; }
+.slide img { width: 100%; height: 140px; object-fit: cover; display: block; }
+.slider-dots {
+    position: absolute; bottom: 18px; left: 50%;
+    transform: translateX(-50%); display: flex; gap: 6px;
+}
+.dot { width: 6px; height: 6px; background: rgba(255,255,255,0.5); border-radius: 50%; transition: 0.3s; }
+.dot.active { width: 16px; border-radius: 10px; background: #ffffff; }
+
+/* ট্রাস্ট বার */
+.trust-strip { display: flex; gap: 8px; padding: 0 12px 12px; overflow-x: auto; scrollbar-width: none; }
+.trust-strip::-webkit-scrollbar { display: none; }
+.trust-item {
+    background: #ffffff; border: 1px solid var(--border-light);
+    border-radius: 10px; padding: 7px 10px; display: flex; align-items: center;
+    gap: 7px; min-width: 125px;
+}
+.trust-item h4 { font-size: 10px; font-weight: 700; }
+.trust-item p { font-size: 8.5px; color: var(--text-muted); }
+
+/* প্ল্যাটফর্ম আইকন গ্রিড */
+.platform-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 0 12px 14px; }
+.platform-icon-btn {
+    background: #ffffff; border-radius: 12px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid #f1f5f9; box-shadow: 0 2px 6px rgba(0,0,0,0.04); cursor: pointer;
+}
+.platform-icon-btn i { font-size: 22px; }
+.ig-btn { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; }
+.fb-btn { background: #1877f2; color: white; }
+.yt-btn { background: #ff0000; color: white; }
+.tk-btn { background: #000000; color: white; }
+.tg-btn { background: #229ed9; color: white; }
+.more-btn { background: #f3e8ff; color: #7c3aed; }
+
+/* সার্ভিস গ্রিড ও কার্ড */
+.section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 14px 10px; }
+.sec-title { font-size: 14.5px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+.see-all { font-size: 12px; color: var(--primary); cursor: pointer; font-weight: 600; }
+.services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 12px; }
+.service-card {
+    background: #ffffff; border-radius: 14px; overflow: hidden;
+    border: 1px solid #edf2f7; display: flex; flex-direction: column; position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+.badge-pill {
+    position: absolute; top: 7px; left: 7px; font-size: 9px;
+    font-weight: 700; padding: 2.5px 7px; border-radius: 10px; color: white; z-index: 2;
+}
+.b-bestseller { background: #ea580c; }
+.b-hotdeal { background: #dc2626; }
+.service-thumb {
+    height: 95px; display: flex; align-items: center; justify-content: center;
+}
+.thumb-icon { font-size: 38px; color: #ffffff; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); }
+.card-body { padding: 9px; display: flex; flex-direction: column; flex-grow: 1; }
+.card-title { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.card-subtitle { font-size: 9.5px; color: var(--text-muted); margin-bottom: 5px; }
+.card-rating { display: flex; gap: 3px; font-size: 9.5px; color: #eab308; margin-bottom: 6px; }
+.price-row { display: flex; align-items: baseline; gap: 6px; margin-top: auto; margin-bottom: 7px; }
+.curr-price { font-size: 15px; font-weight: 800; color: #0f172a; }
+.del-price { font-size: 11px; color: #94a3b8; text-decoration: line-through; }
+.btn-order {
+    background: var(--primary); color: #ffffff; border: none; border-radius: 7px;
+    padding: 7px; font-size: 11.5px; font-weight: 600; display: flex; align-items: center;
+    justify-content: center; gap: 5px; cursor: pointer;
+}
+
+/* পেজ হেডার ও ফিল্টার পিল */
+.page-header { padding: 12px 14px; }
+.page-header h3 { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+.page-header p { font-size: 11px; color: var(--text-muted); }
+.filter-pills { display: flex; gap: 6px; overflow-x: auto; padding-top: 8px; scrollbar-width: none; }
+.filter-pills::-webkit-scrollbar { display: none; }
+.pill {
+    background: #ffffff; border: 1px solid var(--border-light); padding: 5px 12px;
+    border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+.pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* বান্ডেল কার্ড */
+.bundles-container { padding: 0 12px; display: flex; flex-direction: column; gap: 12px; }
+.bundle-card {
+    background: #ffffff; border-radius: 14px; padding: 14px;
+    border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.bundle-card h4 { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+.bundle-features { font-size: 11.5px; color: var(--text-muted); line-height: 1.5; margin: 8px 0; }
+
+/* প্রোফাইল ও FAQ */
+.profile-card {
+    background: #ffffff; margin: 12px; padding: 16px; border-radius: 14px;
+    display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-light);
+}
+.profile-avatar {
+    width: 45px; height: 45px; border-radius: 50%; background: #eff6ff;
+    color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.profile-info h4 { font-size: 14px; }
+.profile-info p { font-size: 11px; color: var(--text-muted); }
+.profile-action-list { margin: 0 12px 14px; background: #fff; border-radius: 14px; border: 1px solid var(--border-light); overflow: hidden; }
+.profile-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; text-decoration: none; color: var(--text-dark); font-size: 12.5px; font-weight: 600;
+    border-bottom: 1px solid #f1f5f9; cursor: pointer;
+}
+.profile-item span { flex-grow: 1; margin-left: 10px; }
+.faq-container { margin: 12px; background: #fff; border-radius: 14px; padding: 14px; border: 1px solid var(--border-light); }
+.faq-container h4 { font-size: 13px; margin-bottom: 10px; }
+.faq-item { margin-bottom: 10px; border-bottom: 1px solid #f8fafc; padding-bottom: 8px; }
+.faq-item h5 { font-size: 11.5px; color: #1e293b; margin-bottom: 3px; }
+.faq-item p { font-size: 10.5px; color: var(--text-muted); }
+
+/* মডাল (পপআপ) */
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
+    display: none; align-items: flex-end; justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal-sheet {
+    background: #ffffff; width: 100%; max-width: 450px; border-radius: 20px 20px 0 0;
+    padding: 18px 16px; max-height: 85vh; overflow-y: auto;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.modal-header h3 { font-size: 15px; }
+.close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted); }
+.modal-body label { font-size: 11px; font-weight: 700; color: #334155; margin-top: 8px; display: block; }
+.modal-body input, .modal-body select {
+    width: 100%; padding: 9px 10px; margin-top: 4px; border-radius: 8px;
+    border: 1px solid var(--border-light); font-size: 12px; outline: none;
+}
+.price-display {
+    background: #eff6ff; color: var(--primary); padding: 8px 10px;
+    border-radius: 8px; font-size: 13px; margin-top: 10px; font-weight: 600;
+}
+.payment-box {
+    background: #fdf2f8; border: 1px dashed #ec4899; padding: 9px;
+    border-radius: 8px; font-size: 11px; margin-top: 10px; line-height: 1.4;
+}
+.submit-order-btn {
+    background: var(--primary); color: white; width: 100%; padding: 10px;
+    border-radius: 8px; border: none; font-size: 13px; font-weight: 700; margin-top: 14px; cursor: pointer;
+}
+
+/* বটম বার */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff;
+    height: 56px; display: flex; justify-content: space-around; align-items: center;
+    border-top: 1px solid #f1f5f9; box-shadow: 0 -3px 10px rgba(0,0,0,0.03); z-index: 1000;
+}
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #64748b; font-size: 9.5px; font-weight: 600; cursor: pointer; }
+.nav-item i { font-size: 16px; }
+.nav-item.active { color: var(--primary); }
