@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SocialBoost - Account & Orders</title>
+    <title>SocialBoost - Account & Security</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -17,52 +17,43 @@
             --border: #e2e8f0;
         }
 
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-body); color: var(--text-dark); padding-bottom: 75px; }
 
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-            padding-bottom: 75px;
-        }
-
-        /* হেডার */
         header {
-            background: #ffffff; padding: 10px 14px;
-            display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background: #ffffff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .back-btn { font-size: 18px; color: #0f172a; cursor: pointer; border: none; background: none; }
         .logo { font-size: 19px; font-weight: 800; color: #0f172a; }
         .logo span { color: var(--accent-purple); }
-        .cart-icon { position: relative; font-size: 18px; color: #0f172a; }
+        .cart-icon { position: relative; font-size: 18px; color: #0f172a; cursor: pointer; }
         .cart-badge {
             position: absolute; top: -6px; right: -6px; background: #ef4444; color: white;
             font-size: 10px; width: 16px; height: 16px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-weight: bold;
         }
 
-        /* স্ক্রিন ম্যানেজমেন্ট */
         .sub-screen { display: none; padding: 12px 14px; }
         .sub-screen.active { display: block; }
-
-        .sec-title-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px;
-        }
+        .sec-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .sec-title-bar h2 { font-size: 16px; font-weight: 800; color: #0f172a; }
 
-        /* ১. মূল প্রোফাইল ডিজাইন */
-        .user-profile-card {
-            background: #ffffff; padding: 14px; border-radius: 16px;
-            display: flex; align-items: center; gap: 12px; border: 1px solid var(--border);
-            position: relative; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
+        /* অথেনটিকেশন স্ক্রিন */
+        .auth-card { background: #ffffff; padding: 20px 16px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-top: 10px; }
+        .auth-tabs { display: flex; background: #f1f5f9; border-radius: 10px; padding: 4px; margin-bottom: 16px; }
+        .auth-tab-btn { flex: 1; padding: 9px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; background: transparent; color: var(--text-muted); }
+        .auth-tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.06); }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
+        .input-box { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; background: #ffffff; gap: 10px; }
+        .input-box i { color: #94a3b8; font-size: 13px; }
+        .input-box input { border: none; background: transparent; outline: none; width: 100%; font-size: 12px; }
+        .btn-auth-submit { background: linear-gradient(90deg, #2563eb, #1d4ed8); color: white; border: none; width: 100%; padding: 11px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-top: 8px; cursor: pointer; }
+
+        /* ড্যাশবোর্ড ও কার্ড ডিজাইন */
+        .user-profile-card { background: #ffffff; padding: 14px; border-radius: 16px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); position: relative; margin-bottom: 12px; }
         .user-avatar img { width: 55px; height: 55px; border-radius: 50%; background: #e0e7ff; }
         .user-meta h3 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
         .user-meta p { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
@@ -70,84 +61,35 @@
         .edit-prof-btn { position: absolute; right: 12px; top: 12px; background: none; border: none; color: var(--primary); font-size: 16px; cursor: pointer; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
-        .stat-card {
-            background: #ffffff; border-radius: 14px; padding: 12px 8px; text-align: center;
-            border: 1px solid var(--border); cursor: pointer;
-        }
+        .stat-card { background: #ffffff; border-radius: 14px; padding: 12px 8px; text-align: center; border: 1px solid var(--border); cursor: pointer; }
         .stat-card i { font-size: 18px; margin-bottom: 6px; }
         .stat-card h4 { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
         .stat-card p { font-size: 9.5px; color: var(--text-muted); font-weight: 600; }
 
         .menu-list { background: #ffffff; border-radius: 16px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 14px; }
-        .menu-row {
-            display: flex; align-items: center; justify-content: space-between; padding: 13px 14px;
-            text-decoration: none; color: var(--text-dark); border-bottom: 1px solid #f1f5f9; font-size: 12.5px; font-weight: 600; cursor: pointer;
-        }
+        .menu-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 14px; text-decoration: none; color: var(--text-dark); border-bottom: 1px solid #f1f5f9; font-size: 12.5px; font-weight: 600; cursor: pointer; }
         .menu-row:active { background: #f8fafc; }
         .m-left { display: flex; align-items: center; gap: 12px; }
         .m-left i { font-size: 16px; width: 20px; text-align: center; }
         .arrow { color: #94a3b8; font-size: 12px; }
 
-        /* ২. সেটিংস ও সাব-মেনু ডিজাইন */
-        .settings-item {
-            background: #ffffff; border-radius: 14px; padding: 12px 14px; display: flex;
-            align-items: center; justify-content: space-between; margin-bottom: 9px;
-            border: 1px solid var(--border); cursor: pointer;
-        }
+        .settings-item { background: #ffffff; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; border: 1px solid var(--border); cursor: pointer; }
         .s-left { display: flex; align-items: center; gap: 12px; }
-        .s-icon {
-            width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center;
-            justify-content: center; font-size: 16px;
-        }
+        .s-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         .s-text h4 { font-size: 12.5px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
         .s-text p { font-size: 10px; color: var(--text-muted); }
 
-        /* ৩. প্রোফাইল সম্পাদনা ফর্ম */
-        .profile-edit-avatar-box {
-            text-align: center; margin: 15px 0 20px; position: relative;
-        }
-        .edit-avatar-img {
-            width: 80px; height: 80px; border-radius: 50%; background: #e0e7ff; margin: 0 auto 10px; display: block;
-        }
-        .change-photo-btn {
-            background: #2563eb; color: white; border: none; padding: 6px 14px;
-            border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer;
-        }
-        .input-group { margin-bottom: 12px; }
-        .input-group label { font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
-        .input-box {
-            display: flex; align-items: center; border: 1px solid var(--border);
-            border-radius: 8px; padding: 9px 12px; background: #ffffff; gap: 10px;
-        }
-        .input-box i { color: #94a3b8; font-size: 13px; }
-        .input-box input { border: none; background: transparent; outline: none; width: 100%; font-size: 12px; }
-        .btn-save-prof {
-            background: var(--primary); color: white; border: none; width: 100%; padding: 12px;
-            border-radius: 10px; font-size: 13px; font-weight: 700; margin-top: 10px; cursor: pointer;
-        }
-
-        /* ৪. আমার অর্ডার স্ক্রিন */
         .filter-tabs { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
-        .filter-tabs::-webkit-scrollbar { display: none; }
-        .f-tab {
-            padding: 6px 14px; border-radius: 20px; font-size: 11.5px; font-weight: 600;
-            border: 1px solid var(--border); background: #ffffff; cursor: pointer; white-space: nowrap;
-        }
+        .f-tab { padding: 6px 14px; border-radius: 20px; font-size: 11.5px; font-weight: 600; border: 1px solid var(--border); background: #ffffff; cursor: pointer; white-space: nowrap; }
         .f-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .order-card-item {
-            background: #ffffff; border-radius: 14px; padding: 12px; border: 1px solid var(--border);
-            margin-bottom: 10px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-        }
+        .order-card-item { background: #ffffff; border-radius: 14px; padding: 12px; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; }
         .order-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .order-id { font-size: 11px; font-weight: 800; color: #1e293b; }
-        .status-badge {
-            font-size: 10px; font-weight: 700; padding: 2.5px 8px; border-radius: 10px;
-        }
+        .status-badge { font-size: 10px; font-weight: 700; padding: 2.5px 8px; border-radius: 10px; }
         .st-processing { background: #fef3c7; color: #d97706; }
         .st-completed { background: #ecfdf5; color: #059669; }
         .st-cancelled { background: #fee2e2; color: #dc2626; }
-
         .order-mid { display: flex; align-items: center; justify-content: space-between; }
         .om-left { display: flex; align-items: center; gap: 10px; }
         .om-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; }
@@ -156,83 +98,33 @@
         .om-date { font-size: 9.5px; color: #94a3b8; margin-top: 3px; }
         .om-price { font-size: 14px; font-weight: 800; color: #0f172a; }
 
-        /* ৫. অর্ডার বিস্তারিত ও ট্র্যাকার */
-        .order-detail-header-card {
-            background: #ffffff; border-radius: 14px; padding: 12px; border: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
-        }
-        /* স্টেপ ট্র্যাকার */
-        .tracker-box {
-            background: #ffffff; border-radius: 14px; padding: 16px 12px; border: 1px solid var(--border);
-            margin-bottom: 14px;
-        }
-        .step-progress-row {
-            display: flex; justify-content: space-between; position: relative; margin-bottom: 10px;
-        }
-        .step-progress-row::before {
-            content: ''; position: absolute; top: 12px; left: 15px; right: 15px; height: 2px;
-            background: #e2e8f0; z-index: 1;
-        }
-        .step-col {
-            position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
-            text-align: center; width: 25%;
-        }
-        .step-circle {
-            width: 24px; height: 24px; border-radius: 50%; background: #ffffff; border: 2px solid #cbd5e1;
-            display: flex; align-items: center; justify-content: center; font-size: 10px; margin-bottom: 6px;
-        }
+        .tracker-box { background: #ffffff; border-radius: 14px; padding: 16px 12px; border: 1px solid var(--border); margin-bottom: 14px; }
+        .step-progress-row { display: flex; justify-content: space-between; position: relative; margin-bottom: 10px; }
+        .step-progress-row::before { content: ''; position: absolute; top: 12px; left: 15px; right: 15px; height: 2px; background: #e2e8f0; z-index: 1; }
+        .step-col { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; width: 25%; }
+        .step-circle { width: 24px; height: 24px; border-radius: 50%; background: #ffffff; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 10px; margin-bottom: 6px; }
         .step-col.done .step-circle { background: #2563eb; border-color: #2563eb; color: white; }
         .step-col.active .step-circle { background: #2563eb; border-color: #2563eb; color: white; box-shadow: 0 0 0 3px rgba(37,99,235,0.2); }
         .step-label { font-size: 9px; font-weight: 700; color: #1e293b; line-height: 1.2; }
         .step-time { font-size: 8px; color: var(--text-muted); margin-top: 2px; }
 
-        .order-spec-card {
-            background: #ffffff; border-radius: 14px; padding: 14px; border: 1px solid var(--border);
-            margin-bottom: 12px;
-        }
+        .order-spec-card { background: #ffffff; border-radius: 14px; padding: 14px; border: 1px solid var(--border); margin-bottom: 12px; }
         .spec-title { font-size: 13px; font-weight: 800; margin-bottom: 10px; }
-        .spec-row {
-            display: flex; justify-content: space-between; font-size: 11px; padding: 7px 0;
-            border-bottom: 1px solid #f8fafc;
-        }
+        .spec-row { display: flex; justify-content: space-between; font-size: 11px; padding: 7px 0; border-bottom: 1px solid #f8fafc; }
         .spec-row span { color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
         .spec-row strong { color: #0f172a; text-align: right; }
 
-        .info-alert {
-            background: #eff6ff; border-radius: 10px; padding: 10px 12px; font-size: 11px;
-            color: #1e40af; display: flex; gap: 8px; line-height: 1.4; border: 1px solid #bfdbfe;
-        }
-
-        /* ৬. নোটিফিকেশন স্ক্রিন */
-        .btn-mark-read {
-            background: #eff6ff; color: var(--primary); border: none; padding: 5px 12px;
-            border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer;
-        }
-        .notif-group-title {
-            font-size: 12px; font-weight: 800; color: #0f172a; margin: 12px 0 8px;
-        }
-        .notif-card {
-            background: #ffffff; border-radius: 12px; padding: 12px; border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
-            position: relative;
-        }
+        .info-alert { background: #eff6ff; border-radius: 10px; padding: 10px 12px; font-size: 11px; color: #1e40af; display: flex; gap: 8px; line-height: 1.4; border: 1px solid #bfdbfe; }
+        .notif-card { background: #ffffff; border-radius: 12px; padding: 12px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         .nc-left { display: flex; align-items: center; gap: 10px; }
-        .nc-icon {
-            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-size: 16px;
-        }
+        .nc-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         .nc-body h4 { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
         .nc-body p { font-size: 10px; color: var(--text-muted); }
         .nc-right { display: flex; align-items: center; gap: 6px; }
-        .nc-time { font-size: 9.5px; color: #94a3b8; white-space: nowrap; }
+        .nc-time { font-size: 9.5px; color: #94a3b8; }
         .red-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; }
 
-        /* বটম ন্যাভ */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff;
-            height: 56px; display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid #f1f5f9; box-shadow: 0 -3px 10px rgba(0,0,0,0.03); z-index: 1000;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; height: 56px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #f1f5f9; box-shadow: 0 -3px 10px rgba(0,0,0,0.03); z-index: 1000; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #64748b; font-size: 9.5px; font-weight: 600; text-decoration: none; }
         .nav-item i { font-size: 16px; }
         .nav-item.active { color: var(--primary); }
@@ -252,26 +144,79 @@
         </div>
     </header>
 
-
-    <!-- ================= ১. মূল প্রোফাইল স্ক্রিন ================= -->
-    <section id="screen-profile" class="sub-screen active">
+    <!-- ================= ০. সিকিউর লগইন ও সাইন-আপ গেট (লগইন না থাকলে এটি দেখাবে) ================= -->
+    <section id="screen-auth" class="sub-screen active">
         <div class="sec-title-bar">
-            <h2>আমার প্রোফাইল</h2>
+            <h2>অ্যাকাউন্ট অ্যাক্সেস</h2>
         </div>
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tabBtnLogin" onclick="toggleAuthTab('login')">লগইন</button>
+                <button class="auth-tab-btn" id="tabBtnReg" onclick="toggleAuthTab('register')">নতুন অ্যাকাউন্ট</button>
+            </div>
+
+            <!-- লগইন ফর্ম -->
+            <form id="authLoginForm" onsubmit="executeLogin(event)">
+                <div class="input-group">
+                    <label>মোবাইল নম্বর</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="inLoginPhone" placeholder="017XXXXXXXX" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>পাসওয়ার্ড</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="inLoginPass" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-auth-submit">লগইন করুন</button>
+            </form>
+
+            <!-- সাইন আপ ফর্ম -->
+            <form id="authRegForm" style="display: none;" onsubmit="executeRegister(event)">
+                <div class="input-group">
+                    <label>আপনার পুরো নাম</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="inRegName" placeholder="যেমন: তানভীর হাসান" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>মোবাইল নম্বর (হোয়াটসঅ্যাপ)</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="inRegPhone" placeholder="017XXXXXXXX" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>পাসওয়ার্ড</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="inRegPass" placeholder="কমপক্ষে ৬ ডিজিট" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-auth-submit">অ্যাকাউন্ট তৈরি করুন</button>
+            </form>
+        </div>
+    </section>
+   <!-- ================= ১. মূল প্রোফাইল ড্যাশবোর্ড ================= -->
+    <section id="screen-profile" class="sub-screen">
+        <div class="sec-title-bar"><h2>আমার প্রোফাইল</h2></div>
 
         <div class="user-profile-card">
             <div class="user-avatar">
                 <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&q=80" alt="Avatar">
             </div>
             <div class="user-meta">
-                <h3 id="dashName">User123</h3>
-                <p id="dashEmail">user123@gmail.com</p>
+                <h3 id="dashName">User</h3>
+                <p id="dashEmail">user@gmail.com</p>
                 <span class="verified-tag"><i class="fa-solid fa-circle-check"></i> Verified Account</span>
             </div>
             <button class="edit-prof-btn" onclick="openScreen('screen-edit-profile')"><i class="fa-solid fa-pen-to-square"></i></button>
         </div>
 
-        <!-- ৩টি স্ট্যাটাস কাউন্টার কার্ড -->
         <div class="stats-grid">
             <div class="stat-card" onclick="openScreen('screen-orders', 'all')">
                 <i class="fa-regular fa-clipboard" style="color: #64748b;"></i>
@@ -290,7 +235,6 @@
             </div>
         </div>
 
-        <!-- অ্যাকশন মেনু লিস্ট -->
         <div class="menu-list">
             <div class="menu-row" onclick="openScreen('screen-orders')">
                 <div class="m-left"><i class="fa-solid fa-box" style="color: #3b82f6;"></i><span>আমার অর্ডার</span></div>
@@ -320,148 +264,59 @@
                 <div class="m-left"><i class="fa-solid fa-gear" style="color: #8b5cf6;"></i><span>সেটিংস</span></div>
                 <i class="fa-solid fa-angle-right arrow"></i>
             </div>
-            <div class="menu-row" onclick="handleLogout()">
+            <div class="menu-row" onclick="executeLogout()">
                 <div class="m-left"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ef4444;"></i><span style="color: #ef4444;">লগআউট</span></div>
                 <i class="fa-solid fa-angle-right arrow"></i>
             </div>
         </div>
     </section>
 
-
     <!-- ================= ২. সেটিংস স্ক্রিন ================= -->
     <section id="screen-settings" class="sub-screen">
-        <div class="sec-title-bar">
-            <h2>সেটিংস</h2>
-        </div>
+        <div class="sec-title-bar"><h2>সেটিংস</h2></div>
         <div class="settings-item" onclick="openScreen('screen-edit-profile')">
-            <div class="s-left">
-                <div class="s-icon" style="background: #fdf2f8; color: #ec4899;"><i class="fa-regular fa-user"></i></div>
-                <div class="s-text">
-                    <h4>প্রোফাইল সম্পাদনা</h4>
-                    <p>নাম, ইমেইল, মোবাইল, ঠিকানা পরিবর্তন করুন</p>
-                </div>
-            </div>
+            <div class="s-left"><div class="s-icon" style="background:#fdf2f8;color:#ec4899;"><i class="fa-regular fa-user"></i></div><div class="s-text"><h4>প্রোফাইল সম্পাদনা</h4><p>নাম, ইমেইল, মোবাইল, ঠিকানা পরিবর্তন করুন</p></div></div>
             <i class="fa-solid fa-angle-right arrow"></i>
         </div>
-        <div class="settings-item" onclick="alert('পাসওয়ার্ড পরিবর্তনের অপশনটি শীঘ্রই আসছে!')">
-            <div class="s-left">
-                <div class="s-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fa-solid fa-lock"></i></div>
-                <div class="s-text">
-                    <h4>পাসওয়ার্ড পরিবর্তন</h4>
-                    <p>আপনার অ্যাকাউন্ট সুরক্ষিত রাখুন</p>
-                </div>
-            </div>
+        <div class="settings-item" onclick="alert('পাসওয়ার্ড সিকিউরিটি শীঘ্রই আসছে!')">
+            <div class="s-left"><div class="s-icon" style="background:#f5f3ff;color:#8b5cf6;"><i class="fa-solid fa-lock"></i></div><div class="s-text"><h4>পাসওয়ার্ড পরিবর্তন</h4><p>অ্যাকাউন্ট সুরক্ষিত রাখুন</p></div></div>
             <i class="fa-solid fa-angle-right arrow"></i>
         </div>
-        <div class="settings-item" onclick="alert('2FA সিকিউরিটি চালু করা হয়েছে!')">
-            <div class="s-left">
-                <div class="s-icon" style="background: #ecfdf5; color: #10b981;"><i class="fa-solid fa-shield-halved"></i></div>
-                <div class="s-text">
-                    <h4>দুই ধাপ যাচাই (2FA)</h4>
-                    <p>অতিরিক্ত নিরাপত্তা যোগ করুন</p>
-                </div>
-            </div>
+        <div class="settings-item" onclick="alert('2FA অ্যাক্টিভ হয়েছে!')">
+            <div class="s-left"><div class="s-icon" style="background:#ecfdf5;color:#10b981;"><i class="fa-solid fa-shield-halved"></i></div><div class="s-text"><h4>দুই ধাপ যাচাই (2FA)</h4><p>অতিরিক্ত নিরাপত্তা যোগ করুন</p></div></div>
             <i class="fa-solid fa-angle-right arrow"></i>
         </div>
         <div class="settings-item" onclick="openScreen('screen-notifications')">
-            <div class="s-left">
-                <div class="s-icon" style="background: #fffbeb; color: #f59e0b;"><i class="fa-regular fa-bell"></i></div>
-                <div class="s-text">
-                    <h4>নোটিফিকেশন সেটিংস</h4>
-                    <p>অর্ডার আপডেট এবং অফারের নোটিফিকেশন</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-angle-right arrow"></i>
-        </div>
-        <div class="settings-item" onclick="alert('বর্তমানে শুধুমাত্র বাংলা ভাষা উপলব্ধ আছে।')">
-            <div class="s-left">
-                <div class="s-icon" style="background: #eff6ff; color: #3b82f6;"><i class="fa-solid fa-globe"></i></div>
-                <div class="s-text">
-                    <h4>ভাষা পরিবর্তন</h4>
-                    <p>বাংলা / English নির্ধারণ করুন</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-angle-right arrow"></i>
-        </div>
-        <div class="settings-item" onclick="alert('ডার্ক মোড শীঘ্রই যুক্ত হচ্ছে!')">
-            <div class="s-left">
-                <div class="s-icon" style="background: #f8fafc; color: #64748b;"><i class="fa-regular fa-moon"></i></div>
-                <div class="s-text">
-                    <h4>থিম পরিবর্তন</h4>
-                    <p>লাইট / ডার্ক মোড</p>
-                </div>
-            </div>
+            <div class="s-left"><div class="s-icon" style="background:#fffbeb;color:#f59e0b;"><i class="fa-regular fa-bell"></i></div><div class="s-text"><h4>নোটিফিকেশন সেটিংস</h4><p>অর্ডার ও অফার আপডেট</p></div></div>
             <i class="fa-solid fa-angle-right arrow"></i>
         </div>
         <div class="settings-item" onclick="openScreen('screen-payments')">
-            <div class="s-left">
-                <div class="s-icon" style="background: #ecfdf5; color: #059669;"><i class="fa-regular fa-credit-card"></i></div>
-                <div class="s-text">
-                    <h4>পেমেন্ট সেটিংস</h4>
-                    <p>ডিফল্ট পেমেন্ট মেথড ম্যানেজ করুন</p>
-                </div>
-            </div>
+            <div class="s-left"><div class="s-icon" style="background:#ecfdf5;color:#059669;"><i class="fa-regular fa-credit-card"></i></div><div class="s-text"><h4>পেমেন্ট সেটিংস</h4><p>মেথড ম্যানেজ করুন</p></div></div>
             <i class="fa-solid fa-angle-right arrow"></i>
         </div>
-        <div class="settings-item" onclick="handleDeleteAccount()">
-            <div class="s-left">
-                <div class="s-icon" style="background: #fee2e2; color: #ef4444;"><i class="fa-regular fa-trash-can"></i></div>
-                <div class="s-text">
-                    <h4 style="color: #ef4444;">অ্যাকাউন্ট ডিলিট</h4>
-                    <p>আপনার অ্যাকাউন্ট স্থায়ীভাবে মুছে ফেলুন</p>
-                </div>
-            </div>
+        <div class="settings-item" onclick="executeLogout()">
+            <div class="s-left"><div class="s-icon" style="background:#fee2e2;color:#ef4444;"><i class="fa-regular fa-trash-can"></i></div><div class="s-text"><h4 style="color:#ef4444;">অ্যাকাউন্ট ডিলিট</h4><p>স্থায়ীভাবে মুছে ফেলুন</p></div></div>
             <i class="fa-solid fa-angle-right arrow"></i>
         </div>
     </section>
 
-
-    <!-- ================= ৩. প্রোফাইল সম্পাদনা স্ক্রিন ================= -->
+    <!-- ================= ৩. প্রোফাইল সম্পাদনা ================= -->
     <section id="screen-edit-profile" class="sub-screen">
-        <div class="sec-title-bar">
-            <h2>প্রোফাইল সম্পাদনা</h2>
+        <div class="sec-title-bar"><h2>প্রোফাইল সম্পাদনা</h2></div>
+        <div style="text-align:center; margin:15px 0 20px;">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&q=80" alt="Profile" style="width:80px;height:80px;border-radius:50%;margin:0 auto 10px;display:block;">
+            <button style="background:#2563eb;color:white;border:none;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;"><i class="fa-solid fa-camera"></i> ছবি পরিবর্তন</button>
         </div>
-        <div class="profile-edit-avatar-box">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&q=80" alt="Profile" class="edit-avatar-img">
-            <button class="change-photo-btn"><i class="fa-solid fa-camera"></i> ছবি পরিবর্তন</button>
-        </div>
-        <div class="input-group">
-            <label>নাম</label>
-            <div class="input-box">
-                <i class="fa-regular fa-user"></i>
-                <input type="text" id="editNameInput" value="User123">
-            </div>
-        </div>
-        <div class="input-group">
-            <label>ইমেইল</label>
-            <div class="input-box">
-                <i class="fa-regular fa-envelope"></i>
-                <input type="email" id="editEmailInput" value="user123@gmail.com">
-            </div>
-        </div>
-        <div class="input-group">
-            <label>মোবাইল নম্বর</label>
-            <div class="input-box">
-                <i class="fa-solid fa-phone"></i>
-                <input type="tel" id="editPhoneInput" value="+8801XXXXXXXXX">
-            </div>
-        </div>
-        <div class="input-group">
-            <label>ঠিকানা</label>
-            <div class="input-box">
-                <i class="fa-solid fa-location-dot"></i>
-                <input type="text" id="editAddressInput" value="Dhaka, Bangladesh">
-            </div>
-        </div>
-        <button class="btn-save-prof" onclick="saveProfileChanges()">পরিবর্তন সংরক্ষণ করুন</button>
+        <div class="input-group"><label>নাম</label><div class="input-box"><i class="fa-regular fa-user"></i><input type="text" id="editNameInput"></div></div>
+        <div class="input-group"><label>ইমেইল</label><div class="input-box"><i class="fa-regular fa-envelope"></i><input type="email" id="editEmailInput"></div></div>
+        <div class="input-group"><label>মোবাইল নম্বর</label><div class="input-box"><i class="fa-solid fa-phone"></i><input type="tel" id="editPhoneInput"></div></div>
+        <div class="input-group"><label>ঠিকানা</label><div class="input-box"><i class="fa-solid fa-location-dot"></i><input type="text" id="editAddressInput" value="Dhaka, Bangladesh"></div></div>
+        <button style="background:var(--primary);color:white;border:none;width:100%;padding:12px;border-radius:10px;font-size:13px;font-weight:700;margin-top:10px;" onclick="saveProfileChanges()">পরিবর্তন সংরক্ষণ করুন</button>
     </section>
-
 
     <!-- ================= ৪. আমার অর্ডার স্ক্রিন ================= -->
     <section id="screen-orders" class="sub-screen">
-        <div class="sec-title-bar">
-            <h2>আমার অর্ডার</h2>
-        </div>
+        <div class="sec-title-bar"><h2>আমার অর্ডার</h2></div>
         <div class="filter-tabs">
             <button class="f-tab active" onclick="filterOrderTab('all', this)">All</button>
             <button class="f-tab" onclick="filterOrderTab('processing', this)">Processing</button>
@@ -469,353 +324,187 @@
             <button class="f-tab" onclick="filterOrderTab('cancelled', this)">Cancelled</button>
         </div>
         <div id="ordersListContainer">
-            <!-- কার্ড ১: Instagram Followers -->
             <div class="order-card-item" data-status="processing" onclick="openOrderDetail('Instagram Followers', '1,000 Followers', '৳150', '#SB251024', '24 Oct 2026, 09:41 AM', 'Processing', 'BK123456789', 'https://instagram.com/username')">
-                <div class="order-top">
-                    <span class="order-id">#SB251024</span>
-                    <span class="status-badge st-processing">Processing</span>
-                </div>
-                <div class="order-mid">
-                    <div class="om-left">
-                        <div class="om-icon" style="background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);">
-                            <i class="fa-brands fa-instagram"></i>
-                        </div>
-                        <div class="om-info">
-                            <h4>Instagram Followers</h4>
-                            <p>1,000 Followers</p>
-                            <div class="om-date">24 Oct 2026, 09:41 AM</div>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="om-price">৳150</div>
-                        <i class="fa-solid fa-angle-right arrow"></i>
-                    </div>
-                </div>
+                <div class="order-top"><span class="order-id">#SB251024</span><span class="status-badge st-processing">Processing</span></div>
+                <div class="order-mid"><div class="om-left"><div class="om-icon" style="background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);"><i class="fa-brands fa-instagram"></i></div><div class="om-info"><h4>Instagram Followers</h4><p>1,000 Followers</p><div class="om-date">24 Oct 2026, 09:41 AM</div></div></div><div style="text-align:right;"><div class="om-price">৳150</div><i class="fa-solid fa-angle-right arrow"></i></div></div>
             </div>
-
-            <!-- কার্ড ২: Facebook Page Likes -->
             <div class="order-card-item" data-status="completed" onclick="openOrderDetail('Facebook Page Likes', '5,000 Likes', '৳600', '#SB251023', '23 Oct 2026, 02:15 PM', 'Completed', 'BK994821034', 'https://facebook.com/page')">
-                <div class="order-top">
-                    <span class="order-id">#SB251023</span>
-                    <span class="status-badge st-completed">Completed</span>
-                </div>
-                <div class="order-mid">
-                    <div class="om-left">
-                        <div class="om-icon" style="background: #1877f2;"><i class="fa-brands fa-facebook-f"></i></div>
-                        <div class="om-info">
-                            <h4>Facebook Page Likes</h4>
-                            <p>5,000 Likes</p>
-                            <div class="om-date">23 Oct 2026, 02:15 PM</div>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="om-price">৳600</div>
-                        <i class="fa-solid fa-angle-right arrow"></i>
-                    </div>
-                </div>
+                <div class="order-top"><span class="order-id">#SB251023</span><span class="status-badge st-completed">Completed</span></div>
+                <div class="order-mid"><div class="om-left"><div class="om-icon" style="background:#1877f2;"><i class="fa-brands fa-facebook-f"></i></div><div class="om-info"><h4>Facebook Page Likes</h4><p>5,000 Likes</p><div class="om-date">23 Oct 2026, 02:15 PM</div></div></div><div style="text-align:right;"><div class="om-price">৳600</div><i class="fa-solid fa-angle-right arrow"></i></div></div>
             </div>
-
-            <!-- কার্ড ৩: TikTok Followers -->
             <div class="order-card-item" data-status="completed" onclick="openOrderDetail('TikTok Followers', '2,000 Followers', '৳300', '#SB251022', '22 Oct 2026, 11:20 AM', 'Completed', 'NG883204911', 'https://tiktok.com/@user')">
-                <div class="order-top">
-                    <span class="order-id">#SB251022</span>
-                    <span class="status-badge st-completed">Completed</span>
-                </div>
-                <div class="order-mid">
-                    <div class="om-left">
-                        <div class="om-icon" style="background: #000000;"><i class="fa-brands fa-tiktok"></i></div>
-                        <div class="om-info">
-                            <h4>TikTok Followers</h4>
-                            <p>2,000 Followers</p>
-                            <div class="om-date">22 Oct 2026, 11:20 AM</div>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="om-price">৳300</div>
-                        <i class="fa-solid fa-angle-right arrow"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- কার্ড ৪: YouTube Subscribers -->
-            <div class="order-card-item" data-status="cancelled" onclick="openOrderDetail('YouTube Subscribers', '1,000 Subscribers', '৳250', '#SB251021', '21 Oct 2026, 06:10 PM', 'Cancelled', 'RK119933221', 'https://youtube.com/channel')">
-                <div class="order-top">
-                    <span class="order-id">#SB251021</span>
-                    <span class="status-badge st-cancelled">Cancelled</span>
-                </div>
-                <div class="order-mid">
-                    <div class="om-left">
-                        <div class="om-icon" style="background: #ff0000;"><i class="fa-brands fa-youtube"></i></div>
-                        <div class="om-info">
-                            <h4>YouTube Subscribers</h4>
-                            <p>1,000 Subscribers</p>
-                            <div class="om-date">21 Oct 2026, 06:10 PM</div>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="om-price">৳250</div>
-                        <i class="fa-solid fa-angle-right arrow"></i>
-                    </div>
-                </div>
+                <div class="order-top"><span class="order-id">#SB251022</span><span class="status-badge st-completed">Completed</span></div>
+                <div class="order-mid"><div class="om-left"><div class="om-icon" style="background:#000000;"><i class="fa-brands fa-tiktok"></i></div><div class="om-info"><h4>TikTok Followers</h4><p>2,000 Followers</p><div class="om-date">22 Oct 2026, 11:20 AM</div></div></div><div style="text-align:right;"><div class="om-price">৳300</div><i class="fa-solid fa-angle-right arrow"></i></div></div>
             </div>
         </div>
     </section>
 
-
-    <!-- ================= ৫. অর্ডার বিস্তারিত ও ট্র্যাকার স্ক্রিন ================= -->
+    <!-- ================= ৫. অর্ডার বিস্তারিত ও ট্র্যাকার ================= -->
     <section id="screen-order-detail" class="sub-screen">
-        <div class="sec-title-bar">
-            <h2>অর্ডার বিস্তারিত</h2>
+        <div class="sec-title-bar"><h2>অর্ডার বিস্তারিত</h2></div>
+        <div style="background:#fff;border-radius:14px;padding:12px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div class="om-left"><div class="om-icon" id="odIcon" style="background:#2563eb;"><i class="fa-solid fa-cubes"></i></div><div class="om-info"><h4 id="odTitle">Service</h4><p id="odPkg">Package</p></div></div>
+            <div style="text-align:right;"><span class="status-badge st-processing" id="odBadge">Processing</span><div class="om-price" id="odPrice" style="margin-top:4px;">৳0</div></div>
         </div>
-
-        <div class="order-detail-header-card">
-            <div class="om-left">
-                <div class="om-icon" id="odIcon" style="background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);">
-                    <i class="fa-brands fa-instagram"></i>
-                </div>
-                <div class="om-info">
-                    <h4 id="odTitle">Instagram Followers</h4>
-                    <p id="odPkg">1,000 Followers</p>
-                </div>
-            </div>
-            <div style="text-align: right;">
-                <span class="status-badge st-processing" id="odBadge">Processing</span>
-                <div class="om-price" id="odPrice" style="margin-top: 4px;">৳150</div>
-            </div>
-        </div>
-
-        <!-- লাইভ স্টেপ ট্র্যাকার -->
         <div class="tracker-box">
             <div class="step-progress-row">
-                <div class="step-col done">
-                    <div class="step-circle"><i class="fa-solid fa-check"></i></div>
-                    <div class="step-label">অর্ডার<br>কৃত হয়েছে</div>
-                    <div class="step-time">24 Oct<br>09:41 AM</div>
-                </div>
-                <div class="step-col active">
-                    <div class="step-circle"><i class="fa-solid fa-clock"></i></div>
-                    <div class="step-label">পেমেন্ট<br>যাচাই হচ্ছে</div>
-                    <div class="step-time">24 Oct<br>09:45 AM</div>
-                </div>
-                <div class="step-col">
-                    <div class="step-circle">3</div>
-                    <div class="step-label">প্রসেসিং<br>চলছে</div>
-                </div>
-                <div class="step-col">
-                    <div class="step-circle">4</div>
-                    <div class="step-label">সম্পূর্ণ<br>হবে</div>
-                </div>
+                <div class="step-col done"><div class="step-circle"><i class="fa-solid fa-check"></i></div><div class="step-label">অর্ডার<br>কৃত হয়েছে</div></div>
+                <div class="step-col active"><div class="step-circle"><i class="fa-solid fa-clock"></i></div><div class="step-label">পেমেন্ট<br>যাচাই হচ্ছে</div></div>
+                <div class="step-col"><div class="step-circle">3</div><div class="step-label">প্রসেসিং<br>চলছে</div></div>
+                <div class="step-col"><div class="step-circle">4</div><div class="step-label">সম্পূর্ণ<br>হবে</div></div>
             </div>
         </div>
-
-        <!-- অর্ডার তথ্য -->
         <div class="order-spec-card">
             <div class="spec-title">অর্ডার তথ্য</div>
-            <div class="spec-row">
-                <span><i class="fa-regular fa-clipboard"></i> অর্ডার নম্বর</span>
-                <strong id="specId">#SB251024</strong>
-            </div>
-            <div class="spec-row">
-                <span><i class="fa-regular fa-calendar"></i> অর্ডারের সময়</span>
-                <strong id="specTime">24 Oct 2026, 09:41 AM</strong>
-            </div>
-            <div class="spec-row">
-                <span><i class="fa-solid fa-cubes"></i> সার্ভিস</span>
-                <strong id="specService">Instagram Followers</strong>
-            </div>
-            <div class="spec-row">
-                <span><i class="fa-solid fa-box-open"></i> প্যাকেজ</span>
-                <strong id="specPackage">1,000 Followers</strong>
-            </div>
-            <div class="spec-row">
-                <span><i class="fa-regular fa-circle-question"></i> পেমেন্ট পরিমাণ</span>
-                <strong id="specPrice">৳150</strong>
-            </div>
-            <div class="spec-row">
-                <span><i class="fa-regular fa-credit-card"></i> পেমেন্ট মেথড</span>
-                <strong>bKash (Send Money)</strong>
-            </div>
-            <div class="spec-row">
-                <span><i class="fa-regular fa-file-lines"></i> ট্রানজেকশন আইডি</span>
-                <strong id="specTrx">BK123456789</strong>
-            </div>
-            <div class="spec-row">
-                <span><i class="fa-solid fa-link"></i> প্রোফাইল লিঙ্ক</span>
-                <a href="#" id="specLink" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 10px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">https://instagram.com/username</a>
-            </div>
+            <div class="spec-row"><span>অর্ডার নম্বর</span><strong id="specId">#000</strong></div>
+            <div class="spec-row"><span>অর্ডারের সময়</span><strong id="specTime">Today</strong></div>
+            <div class="spec-row"><span>পেমেন্ট মেথড</span><strong>bKash (Send Money)</strong></div>
+            <div class="spec-row"><span>ট্রানজেকশন আইডি</span><strong id="specTrx">Trx</strong></div>
+            <div class="spec-row"><span>প্রোফাইল লিঙ্ক</span><a href="#" id="specLink" target="_blank" style="color:var(--primary);font-size:10px;">Link</a></div>
         </div>
-
-        <div class="info-alert">
-            <i class="fa-solid fa-circle-info" style="font-size: 16px; margin-top: 2px;"></i>
-            <div>আপনার অর্ডারটি এখনো প্রসেসিং চলছে। সাধারণত ০ - ৬ ঘণ্টার মধ্যে সম্পূর্ণ হয়ে যায়।</div>
-        </div>
+        <div class="info-alert"><i class="fa-solid fa-circle-info"></i><div>আপনার অর্ডারটি প্রসেসিং চলছে। ০-৬ ঘণ্টার মধ্যে ডেলিভারি সম্পন্ন হবে।</div></div>
     </section>
 
-
-    <!-- ================= ৬. নোটিফিকেশন স্ক্রিন ================= -->
+    <!-- ================= ৬. নোটিফিকেশন, তথ্য, পেমেন্ট ও FAQ ================= -->
     <section id="screen-notifications" class="sub-screen">
-        <div class="sec-title-bar">
-            <h2>নোটিফিকেশন</h2>
-            <button class="btn-mark-read" onclick="markAllRead()"><i class="fa-solid fa-check"></i> সব পড়া হয়েছে</button>
-        </div>
-
-        <div class="filter-tabs">
-            <button class="f-tab active" onclick="filterNotifTab('all', this)">All</button>
-            <button class="f-tab" onclick="filterNotifTab('orders', this)">Orders</button>
-            <button class="f-tab" onclick="filterNotifTab('offers', this)">Offers</button>
-            <button class="f-tab" onclick="filterNotifTab('system', this)">System</button>
-        </div>
-
-        <!-- আজ -->
-        <div class="notif-group-title">আজ</div>
-        <div class="notif-card" data-cat="orders">
-            <div class="nc-left">
-                <div class="nc-icon" style="background: #ecfdf5; color: #059669;"><i class="fa-solid fa-circle-check"></i></div>
-                <div class="nc-body">
-                    <h4>অর্ডার সম্পন্ন হয়েছে</h4>
-                    <p>Instagram Followers — 1,000</p>
-                </div>
-            </div>
-            <div class="nc-right">
-                <span class="nc-time">২ ঘণ্টা আগে</span>
-                <span class="red-dot"></span>
-                <i class="fa-solid fa-angle-right arrow"></i>
-            </div>
-        </div>
-        <div class="notif-card" data-cat="orders">
-            <div class="nc-left">
-                <div class="nc-icon" style="background: #eff6ff; color: #2563eb;"><i class="fa-regular fa-clock"></i></div>
-                <div class="nc-body">
-                    <h4>অর্ডার প্রসেসিং-এ আছে</h4>
-                    <p>TikTok Followers — 2,000</p>
-                </div>
-            </div>
-            <div class="nc-right">
-                <span class="nc-time">৪ ঘণ্টা আগে</span>
-                <span class="red-dot"></span>
-                <i class="fa-solid fa-angle-right arrow"></i>
-            </div>
-        </div>
-        <div class="notif-card" data-cat="orders">
-            <div class="nc-left">
-                <div class="nc-icon" style="background: #f5f3ff; color: #7c3aed;"><i class="fa-solid fa-wallet"></i></div>
-                <div class="nc-body">
-                    <h4>পেমেন্ট ভেরিফাই হয়েছে</h4>
-                    <p>Facebook Page Likes — 5,000</p>
-                </div>
-            </div>
-            <div class="nc-right">
-                <span class="nc-time">৬ ঘণ্টা আগে</span>
-                <i class="fa-solid fa-angle-right arrow"></i>
-            </div>
-        </div>
-        <div class="notif-card" data-cat="offers">
-            <div class="nc-left">
-                <div class="nc-icon" style="background: #fee2e2; color: #ef4444;"><i class="fa-solid fa-tag"></i></div>
-                <div class="nc-body">
-                    <h4>নতুন স্পেশাল অফার</h4>
-                    <p>Instagram Followers package-এ নতুন ডিসকাউন্ট!</p>
-                </div>
-            </div>
-            <div class="nc-right">
-                <span class="nc-time">১০ ঘণ্টা আগে</span>
-                <i class="fa-solid fa-angle-right arrow"></i>
-            </div>
-        </div>
-
-        <!-- গতকাল -->
-        <div class="notif-group-title">গতকাল</div>
-        <div class="notif-card" data-cat="system">
-            <div class="nc-left">
-                <div class="nc-icon" style="background: #fffbeb; color: #f59e0b;"><i class="fa-regular fa-comment-dots"></i></div>
-                <div class="nc-body">
-                    <h4>সাপোর্ট রিপ্লাই</h4>
-                    <p>আপনার সাপোর্ট টিকেটে নতুন উত্তর দেওয়া হয়েছে।</p>
-                </div>
-            </div>
-            <div class="nc-right">
-                <span class="nc-time">১ দিন আগে</span>
-                <i class="fa-solid fa-angle-right arrow"></i>
-            </div>
-        </div>
-        <div class="notif-card" data-cat="orders">
-            <div class="nc-left">
-                <div class="nc-icon" style="background: #fee2e2; color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="nc-body">
-                    <h4>অর্ডার আপডেট</h4>
-                    <p>YouTube Subscribers অর্ডারের status পরিবর্তন হয়েছে।</p>
-                </div>
-            </div>
-            <div class="nc-right">
-                <span class="nc-time">১ দিন আগে</span>
-                <i class="fa-solid fa-angle-right arrow"></i>
-            </div>
-        </div>
+        <div class="sec-title-bar"><h2>নোটিফিকেশন</h2><button style="background:#eff6ff;color:var(--primary);border:none;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;" onclick="markAllRead()">✓ সব পড়া হয়েছে</button></div>
+        <div class="notif-card"><div class="nc-left"><div class="nc-icon" style="background:#ecfdf5;color:#059669;"><i class="fa-solid fa-circle-check"></i></div><div class="nc-body"><h4>অর্ডার সম্পন্ন হয়েছে</h4><p>Instagram Followers — 1,000</p></div></div><div class="nc-right"><span class="nc-time">২ ঘণ্টা আগে</span><span class="red-dot"></span></div></div>
+        <div class="notif-card"><div class="nc-left"><div class="nc-icon" style="background:#eff6ff;color:#2563eb;"><i class="fa-regular fa-clock"></i></div><div class="nc-body"><h4>অর্ডার প্রসেসিং-এ আছে</h4><p>TikTok Followers — 2,000</p></div></div><div class="nc-right"><span class="nc-time">৪ ঘণ্টা আগে</span><span class="red-dot"></span></div></div>
     </section>
 
-
-    <!-- ================= ৭. আমার তথ্য স্ক্রিন ================= -->
     <section id="screen-info" class="sub-screen">
         <div class="sec-title-bar"><h2>আমার তথ্য</h2></div>
         <div class="order-spec-card">
-            <div class="spec-row"><span>ইউজারনেম:</span><strong id="infoUser">User123</strong></div>
-            <div class="spec-row"><span>ইমেইল:</span><strong id="infoEmail">user123@gmail.com</strong></div>
-            <div class="spec-row"><span>মোবাইল:</span><strong id="infoPhone">+8801XXXXXXXXX</strong></div>
-            <div class="spec-row"><span>ঠিকানা:</span><strong id="infoAddress">Dhaka, Bangladesh</strong></div>
+            <div class="spec-row"><span>ইউজারনেম:</span><strong id="infoUser">User</strong></div>
+            <div class="spec-row"><span>মোবাইল:</span><strong id="infoPhone">Phone</strong></div>
             <div class="spec-row"><span>অ্যাকাউন্ট স্ট্যাটাস:</span><strong style="color:#059669;">Verified</strong></div>
         </div>
     </section>
 
-
-    <!-- ================= ৮. পেমেন্ট হিস্ট্রি স্ক্রিন ================= -->
     <section id="screen-payments" class="sub-screen">
         <div class="sec-title-bar"><h2>পেমেন্ট হিস্ট্রি</h2></div>
-        <div class="order-spec-card">
-            <div class="order-top">
-                <span class="order-id">Trx: BK123456789</span>
-                <span class="status-badge st-completed">Paid</span>
-            </div>
-            <div class="spec-row"><span>মেথড:</span><strong>bKash</strong></div>
-            <div class="spec-row"><span>পরিমাণ:</span><strong>৳150</strong></div>
-            <div class="spec-row"><span>তারিখ:</span><strong>24 Oct 2026</strong></div>
-        </div>
-        <div class="order-spec-card">
-            <div class="order-top">
-                <span class="order-id">Trx: BK994821034</span>
-                <span class="status-badge st-completed">Paid</span>
-            </div>
-            <div class="spec-row"><span>মেথড:</span><strong>bKash</strong></div>
-            <div class="spec-row"><span>পরিমাণ:</span><strong>৳600</strong></div>
-            <div class="spec-row"><span>তারিখ:</span><strong>23 Oct 2026</strong></div>
-        </div>
+        <div class="order-spec-card"><div class="order-top"><span class="order-id">Trx: BK123456789</span><span class="status-badge st-completed">Paid</span></div><div class="spec-row"><span>মেথড:</span><strong>bKash</strong></div><div class="spec-row"><span>পরিমাণ:</span><strong>৳150</strong></div></div>
     </section>
 
-    <!-- ================= ৯. FAQ স্ক্রিন ================= -->
     <section id="screen-faq" class="sub-screen">
         <div class="sec-title-bar"><h2>সাধারণ প্রশ্নোত্তর (FAQ)</h2></div>
-        <div class="order-spec-card">
+        <div class="order-spec-card"><h4 style="font-size:12px;margin-bottom:4px;">ডেলিভারি হতে কত সময় লাগে?</h4><p style="font-size:11px;color:var(--text-muted);">৫ থেকে ১৫ মিনিটের মধ্যে অর্ডার শুরু হয়ে যায়।</p></div>
+    </section>
 
-            <!-- সম্পূর্ণ স্ক্রিপ্ট -->
+    <!-- বটম ন্যাভিগেশন বার -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="index.html" class="nav-item"><i class="fa-solid fa-layer-group"></i><span>Products</span></a>
+        <a href="index.html" class="nav-item"><i class="fa-solid fa-fire"></i><span>Special Offer</span></a>
+        <a href="index.html" class="nav-item"><i class="fa-solid fa-box-archive"></i><span>Bundle Pack</span></a>
+        <a href="account.html" class="nav-item active"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+    </nav> 
+ <!-- সম্পূর্ণ সিকিউর লজিক স্ক্রিপ্ট -->
     <script>
-        let screenHistory = ['screen-profile'];
+        let screenHistory = [];
 
+        // ১. পেজ লোড হলেই চেক করবে ইউজার লগইন আছে কি না!
+        function checkAuthStatus() {
+            const authUser = JSON.parse(localStorage.getItem('sb_auth_user') || 'null');
+            
+            // যদি লগইন না থাকে, সব স্ক্রিন হাইড হয়ে শুধু লগইন/রেজিস্ট্রেশন স্ক্রিন আসবে
+            if (!authUser) {
+                document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
+                document.getElementById('screen-auth').classList.add('active');
+                document.getElementById('headerBackBtn').style.display = 'none';
+                screenHistory = ['screen-auth'];
+            } else {
+                // ইউজার লগইন থাকলে ড্যাশবোর্ড ওপেন হবে
+                openScreen('screen-profile');
+                populateUserData(authUser);
+            }
+        }
+
+        function populateUserData(user) {
+            document.getElementById('dashName').innerText = user.name;
+            document.getElementById('dashEmail').innerText = user.phone;
+            document.getElementById('infoUser').innerText = user.name;
+            document.getElementById('infoPhone').innerText = user.phone;
+            document.getElementById('editNameInput').value = user.name;
+            document.getElementById('editPhoneInput').value = user.phone;
+            document.getElementById('editEmailInput').value = user.email || (user.phone + '@socialboost.com');
+        }
+
+        // লগইন ও রেজিস্ট্রেশন ট্যাব টগল
+        function toggleAuthTab(tab) {
+            document.getElementById('tabBtnLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('tabBtnReg').classList.toggle('active', tab === 'register');
+            document.getElementById('authLoginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('authRegForm').style.display = tab === 'register' ? 'block' : 'none';
+        }
+
+        // রেজিস্ট্রেশন এক্সিকিউট
+        function executeRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('inRegName').value.trim();
+            const phone = document.getElementById('inRegPhone').value.trim();
+            const pass = document.getElementById('inRegPass').value;
+
+            let users = JSON.parse(localStorage.getItem('sb_users_db') || '[]');
+            if (users.find(u => u.phone === phone)) {
+                alert('এই ফোন নম্বর দিয়ে ইতিমধ্যে অ্যাকাউন্ট আছে! লগইন করুন।');
+                toggleAuthTab('login');
+                return;
+            }
+
+            const newUser = { name, phone, pass };
+            users.push(newUser);
+            localStorage.setItem('sb_users_db', JSON.stringify(users));
+            localStorage.setItem('sb_auth_user', JSON.stringify(newUser));
+
+            alert('অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! স্বাগতম ' + name);
+            checkAuthStatus();
+        }
+
+        // লগইন এক্সিকিউট
+        function executeLogin(e) {
+            e.preventDefault();
+            const phone = document.getElementById('inLoginPhone').value.trim();
+            const pass = document.getElementById('inLoginPass').value;
+
+            let users = JSON.parse(localStorage.getItem('sb_users_db') || '[]');
+            const user = users.find(u => u.phone === phone && u.pass === pass);
+
+            if (user) {
+                localStorage.setItem('sb_auth_user', JSON.stringify(user));
+                alert('লগইন সফল হয়েছে!');
+                checkAuthStatus();
+            } else {
+                alert('ভুল মোবাইল নম্বর অথবা পাসওয়ার্ড!');
+            }
+        }
+
+        // লগআউট
+        function executeLogout() {
+            if (confirm('আপনি কি নিশ্চিত লগআউট করতে চান?')) {
+                localStorage.removeItem('sb_auth_user');
+                alert('লগআউট সফল হয়েছে!');
+                checkAuthStatus();
+            }
+        }
+
+        // স্ক্রিন নেভিগেশন
         function openScreen(screenId, filter) {
             document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
 
-            if (screenId !== 'screen-profile') {
+            if (screenId !== 'screen-profile' && screenId !== 'screen-auth') {
                 document.getElementById('headerBackBtn').style.display = 'block';
                 screenHistory.push(screenId);
             } else {
                 document.getElementById('headerBackBtn').style.display = 'none';
-                screenHistory = ['screen-profile'];
+                screenHistory = [screenId];
             }
 
             if (screenId === 'screen-orders' && filter) {
                 const btn = document.querySelector(`.f-tab[onclick*="${filter}"]`);
                 if (btn) filterOrderTab(filter, btn);
             }
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -825,100 +514,52 @@
                 const prev = screenHistory[screenHistory.length - 1];
                 document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
                 document.getElementById(prev).classList.add('active');
-                if (prev === 'screen-profile') {
-                    document.getElementById('headerBackBtn').style.display = 'none';
-                }
+                if (prev === 'screen-profile') document.getElementById('headerBackBtn').style.display = 'none';
             } else {
                 openScreen('screen-profile');
             }
         }
 
-        // অর্ডার ফিল্টার
+        // অর্ডার ফিল্টার ও ডিটেইলস
         function filterOrderTab(status, btn) {
             document.querySelectorAll('#screen-orders .f-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
             document.querySelectorAll('.order-card-item').forEach(card => {
-                if (status === 'all' || card.getAttribute('data-status') === status) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = (status === 'all' || card.getAttribute('data-status') === status) ? 'block' : 'none';
             });
         }
 
-        // অর্ডার বিস্তারিত পেজ ওপেন করা
         function openOrderDetail(title, pkg, price, id, time, status, trx, link) {
             document.getElementById('odTitle').innerText = title;
             document.getElementById('odPkg').innerText = pkg;
             document.getElementById('odPrice').innerText = price;
             document.getElementById('specId').innerText = id;
             document.getElementById('specTime').innerText = time;
-            document.getElementById('specService').innerText = title;
-            document.getElementById('specPackage').innerText = pkg;
-            document.getElementById('specPrice').innerText = price;
             document.getElementById('specTrx').innerText = trx;
             document.getElementById('specLink').innerText = link;
             document.getElementById('specLink').href = link;
-
-            const badge = document.getElementById('odBadge');
-            badge.innerText = status;
-            badge.className = 'status-badge ' + (status === 'Completed' ? 'st-completed' : (status === 'Processing' ? 'st-processing' : 'st-cancelled'));
-
             openScreen('screen-order-detail');
-        }
-
-        // নোটিফিকেশন ফিল্টার
-        function filterNotifTab(cat, btn) {
-            document.querySelectorAll('#screen-notifications .f-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            document.querySelectorAll('.notif-card').forEach(card => {
-                if (cat === 'all' || card.getAttribute('data-cat') === cat) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
         }
 
         function markAllRead() {
             document.querySelectorAll('.red-dot').forEach(dot => dot.style.display = 'none');
-            alert('সব নোটিফিকেশন পড়া হয়েছে হিসেবে চিহ্নিত করা হলো!');
+            alert('সব নোটিফিকেশন পড়া হয়েছে!');
         }
 
-        // প্রোফাইল তথ্য সেভ করা
         function saveProfileChanges() {
             const name = document.getElementById('editNameInput').value;
-            const email = document.getElementById('editEmailInput').value;
             const phone = document.getElementById('editPhoneInput').value;
-            const addr = document.getElementById('editAddressInput').value;
-
-            document.getElementById('dashName').innerText = name;
-            document.getElementById('dashEmail').innerText = email;
-            document.getElementById('infoUser').innerText = name;
-            document.getElementById('infoEmail').innerText = email;
-            document.getElementById('infoPhone').innerText = phone;
-            document.getElementById('infoAddress').innerText = addr;
-
-            alert('প্রোফাইল সফলভাবে আপডেট করা হয়েছে!');
+            let current = JSON.parse(localStorage.getItem('sb_auth_user'));
+            current.name = name;
+            current.phone = phone;
+            localStorage.setItem('sb_auth_user', JSON.stringify(current));
+            populateUserData(current);
+            alert('প্রোফাইল আপডেট হয়েছে!');
             goBack();
         }
 
-        function handleLogout() {
-            if (confirm('আপনি কি নিশ্চিত লগআউট করতে চান?')) {
-                alert('লগআউট সফল হয়েছে!');
-                location.href = 'index.html';
-            }
-        }
-
-        function handleDeleteAccount() {
-            if (confirm('সতর্কতা: আপনার অ্যাকাউন্ট স্থায়ীভাবে মুছে যাবে! আপনি কি নিশ্চিত?')) {
-                alert('অ্যাকাউন্ট মুছে ফেলা হয়েছে।');
-                location.href = 'index.html';
-            }
-        }
+        // স্ক্রিপ্ট শুরু
+        checkAuthStatus();
     </script>
 </body>
-        </html>
-     
+</html>
