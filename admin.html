@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SocialBoost - Central Admin Command Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- ফায়ারবেস ক্লাউড এসডিকে -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -17,6 +20,7 @@
             --card-dark: #111827;
             --card-border: #1f2937;
             --brand-orange: #ff5400;
+            --brand-grad: linear-gradient(135deg, #ff6a00, #f43f1e);
             --brand-cyan: #06b6d4;
             --text-light: #f9fafb;
             --text-muted: #9ca3af;
@@ -24,86 +28,130 @@
             --danger-red: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-dark); color: var(--text-light); padding-bottom: 80px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body {
+            background:
+                radial-gradient(500px 260px at 100% -60px, rgba(255, 84, 0, 0.06), transparent 60%),
+                var(--bg-dark);
+            color: var(--text-light); padding-bottom: 92px; min-height: 100vh;
+        }
 
         /* অ্যাডমিন হেডার */
         .admin-header {
-            background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border);
+            background: rgba(17, 24, 39, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--card-border);
             padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
         }
-        .admin-brand { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 900; }
-        .admin-brand i { color: var(--brand-orange); }
-        .admin-badge { background: rgba(255, 84, 0, 0.15); color: var(--brand-orange); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255, 84, 0, 0.3); }
+        .admin-brand { display: flex; align-items: center; gap: 9px; font-size: 17px; font-weight: 700; letter-spacing: -0.2px; }
+        .admin-brand i {
+            color: #fff; background: var(--brand-grad); width: 30px; height: 30px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+            box-shadow: 0 4px 12px -2px rgba(255, 84, 0, 0.5);
+        }
+        .admin-badge { background: rgba(255, 84, 0, 0.15); color: var(--brand-orange); font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; border: 1px solid rgba(255, 84, 0, 0.3); }
 
         .container { padding: 14px; max-width: 600px; margin: 0 auto; }
         .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
+        .tab-panel.active { display: block; animation: fadeUp 0.3s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* কার্ড ও কন্টেইনার */
         .glass-card {
-            background: var(--card-dark); border: 1px solid var(--card-border); border-radius: 16px;
-            padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            background: linear-gradient(180deg, #131b2c 0%, var(--card-dark) 100%);
+            border: 1px solid var(--card-border); border-radius: 18px;
+            padding: 17px; margin-bottom: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
-        .card-header-title { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-        .card-header-title i { color: var(--brand-orange); }
+        .card-header-title { font-size: 14.5px; font-weight: 700; display: flex; align-items: center; gap: 9px; margin-bottom: 13px; }
+        .card-header-title i {
+            color: #fff; background: var(--brand-grad); width: 28px; height: 28px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;
+        }
 
         /* ইনপুট ফিল্ড ও বাটন */
-        .form-group { margin-bottom: 12px; }
-        .form-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; display: block; }
+        .form-group { margin-bottom: 13px; }
+        .form-group label { font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block; }
         .custom-input {
-            width: 100%; background: #030712; border: 1px solid var(--card-border); border-radius: 10px;
-            padding: 10px 12px; color: var(--text-light); font-size: 13px; outline: none; transition: 0.2s;
+            width: 100%; background: #05080f; border: 1.5px solid var(--card-border); border-radius: 12px;
+            padding: 11px 13px; color: var(--text-light); font-size: 13px; outline: none; transition: 0.2s;
+            font-family: inherit;
         }
-        .custom-input:focus { border-color: var(--brand-orange); }
+        .custom-input:focus { border-color: var(--brand-orange); box-shadow: 0 0 0 3px rgba(255,84,0,0.15); }
 
         .btn-glow {
-            width: 100%; background: linear-gradient(135deg, var(--brand-orange), #ea580c);
-            color: white; border: none; padding: 12px; border-radius: 10px; font-size: 13px;
-            font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
-            box-shadow: 0 4px 15px rgba(255, 84, 0, 0.3);
+            width: 100%; background: var(--brand-grad);
+            color: white; border: none; padding: 13px; border-radius: 12px; font-size: 13.5px;
+            font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+            box-shadow: 0 6px 18px -4px rgba(255, 84, 0, 0.5); transition: 0.15s; position: relative; overflow: hidden;
         }
+        .btn-glow::after {
+            content: ''; position: absolute; top: 0; left: -70%; width: 40%; height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-20deg); animation: btnShine 3.5s ease-in-out infinite;
+        }
+        @keyframes btnShine { 0%, 60% { left: -70%; } 100% { left: 140%; } }
         .btn-glow:active { transform: scale(0.98); }
 
         /* ইন-অ্যাপ প্রিমিয়াম টোস্ট অ্যালার্ট (Browser alert নয়) */
         .toast-notify {
             position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--brand-orange);
-            color: white; padding: 10px 18px; border-radius: 30px; font-size: 12px; font-weight: 700;
-            display: flex; align-items: center; gap: 8px; z-index: 9999; transition: transform 0.3s ease; box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            background: rgba(17, 24, 39, 0.96); backdrop-filter: blur(10px); border: 1px solid var(--brand-orange);
+            color: white; padding: 11px 20px; border-radius: 999px; font-size: 12.5px; font-weight: 600;
+            display: flex; align-items: center; gap: 9px; z-index: 9999; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.55);
         }
         .toast-notify.show { transform: translateX(-50%) translateY(0); }
 
         /* ড্যাশবোর্ড কাউন্টার গ্রিড */
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
-        .stat-box { background: var(--card-dark); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; }
-        .stat-box p { font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
-        .stat-box h3 { font-size: 19px; font-weight: 900; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px; margin-bottom: 15px; }
+        .stat-box {
+            background: linear-gradient(180deg, #131b2c 0%, var(--card-dark) 100%);
+            border: 1px solid var(--card-border); border-radius: 16px; padding: 14px;
+            position: relative; overflow: hidden;
+            animation: fadeUp 0.4s ease backwards;
+        }
+        .stat-box:nth-child(2) { animation-delay: 0.06s; }
+        .stat-box:nth-child(3) { animation-delay: 0.12s; }
+        .stat-box:nth-child(4) { animation-delay: 0.18s; }
+        .stat-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--brand-grad); opacity: 0.85; }
+        .stat-box p { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; }
+        .stat-box h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.5px; }
 
         /* বটম ট্যাব বার */
         .admin-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(17, 24, 39, 0.92);
-            backdrop-filter: blur(12px); border-top: 1px solid var(--card-border); height: 60px;
+            position: fixed; bottom: 10px; left: 12px; right: 12px; background: rgba(17, 24, 39, 0.94);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border); border-radius: 20px; min-height: 62px;
             display: flex; justify-content: space-around; align-items: center; z-index: 100;
+            box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6); padding: 6px 4px;
         }
         .nav-btn {
-            background: none; border: none; color: var(--text-muted); font-size: 9.5px; font-weight: 700;
+            background: none; border: none; color: var(--text-muted); font-size: 9.5px; font-weight: 600;
             display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
+            padding: 7px 13px; border-radius: 14px; transition: 0.2s; min-width: 58px;
         }
-        .nav-btn i { font-size: 16px; }
-        .nav-btn.active { color: var(--brand-orange); }
+        .nav-btn i { font-size: 17px; }
+        .nav-btn.active { color: var(--brand-orange); background: rgba(255, 84, 0, 0.12); }
+        .nav-btn:active { transform: scale(0.92); }
 
         /* অর্ডার কার্ড */
         .order-card {
-            background: #0d131f; border: 1px solid var(--card-border); border-radius: 14px;
-            padding: 12px; margin-bottom: 10px;
+            background: #0d1420; border: 1px solid var(--card-border); border-radius: 16px;
+            padding: 14px; margin-bottom: 11px; transition: 0.2s;
+            animation: fadeUp 0.35s ease backwards;
         }
-        .order-meta-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
-        .order-status-badge { font-size: 9.5px; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
+        .order-meta-row { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; margin-bottom: 5px; }
+        .order-meta-row span:first-child { color: var(--text-muted); }
+        .order-status-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
         .badge-proc { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
         .badge-done { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .order-action-btns { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-act { flex: 1; padding: 8px; border-radius: 8px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; }
+        .order-action-btns { display: flex; gap: 9px; margin-top: 11px; }
+        .btn-act {
+            flex: 1; padding: 9px; border-radius: 10px; border: none; font-size: 11.5px; font-weight: 700;
+            cursor: pointer; text-align: center; text-decoration: none; transition: 0.15s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-act:active { transform: scale(0.96); }
+
     </style>
 </head>
 <body>
